@@ -1,0 +1,206 @@
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.cognifide.activemq</groupId>
+	<artifactId>sling-activemq-parent</artifactId>
+	<inceptionYear>2013</inceptionYear>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>Sling ActiveMq parent</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
+
+		<sling.url>http://localhost:4502</sling.url>
+		<sling.username>admin</sling.username>
+		<sling.password>admin</sling.password>
+	</properties>
+
+	<organization>
+		<name>Cognifide</name>
+		<url>http://www.cognifide.com</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>Tomasz Rękawek</name>
+			<email>tomasz.rekawek@cognifide.com</email>
+			<organization>Cognifide</organization>
+		</developer>
+	</developers>
+
+	<repositories>
+		<repository>
+			<id>adobe-public-releases</id>
+			<name>Adobe Public Repository</name>
+			<url>http://repo.adobe.com/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
+	</repositories>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-scr-plugin</artifactId>
+					<version>1.7.2</version>
+					<executions>
+						<execution>
+							<id>generate-scr-scrdescriptor</id>
+							<goals>
+								<goal>scr</goal>
+							</goals>
+						</execution>
+					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>org.slf4j</groupId>
+							<artifactId>slf4j-simple</artifactId>
+							<version>1.6.1</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.sling</groupId>
+					<artifactId>maven-sling-plugin</artifactId>
+					<version>2.1.0</version>
+					<configuration>
+						<bundleFileName>${project.build.directory}/${project.build.finalName}.jar</bundleFileName>
+						<user>${sling.username}</user>
+						<password>${sling.password}</password>
+						<slingUrl>${sling.url}/system/console</slingUrl>
+					</configuration>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.felix
+										</groupId>
+										<artifactId>
+											maven-scr-plugin
+										</artifactId>
+										<versionRange>
+											[1.7.2,)
+										</versionRange>
+										<goals>
+											<goal>scr</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- scr -->
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.scr.annotations</artifactId>
+				<version>1.6.0</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- felix -->
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>1.4.0</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.osgi.compendium</artifactId>
+				<version>1.4.0</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- sling -->
+			<dependency>
+				<groupId>org.apache.sling</groupId>
+				<artifactId>org.apache.sling.api</artifactId>
+				<version>2.2.0</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.sling</groupId>
+				<artifactId>org.apache.sling.discovery.api</artifactId>
+				<version>0.0.6</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.sling</groupId>
+				<artifactId>org.apache.sling.settings</artifactId>
+				<version>1.2.2</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.sling</groupId>
+				<artifactId>org.apache.sling.commons.scheduler</artifactId>
+				<version>2.3.4</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.sling</groupId>
+				<artifactId>org.apache.sling.commons.osgi</artifactId>
+				<version>2.2.0</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- commons -->
+			<dependency>
+				<groupId>commons-lang</groupId>
+				<artifactId>commons-lang</artifactId>
+				<version>2.5</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!-- jms -->
+			<dependency>
+				<groupId>org.apache.geronimo.specs</groupId>
+				<artifactId>geronimo-jms_1.1_spec</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<modules>
+		<module>sling-activemq-api</module>
+		<module>sling-activemq-core</module>
+		<module>sling-activemq-discovery</module>
+	</modules>
+</project>
