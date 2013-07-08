@@ -34,9 +34,12 @@ import org.osgi.service.component.ComponentContext;
 
 @Component(immediate = true, metatype = true)
 @Service(value = { SlingBlobServlet.class, Servlet.class })
-@Properties({ @Property(name = "sling.servlet.paths", value = "/bin/jms/blob", propertyPrivate = true),
+@Properties({
+		@Property(name = "sling.servlet.paths", value = "/bin/jms/blob", propertyPrivate = true),
 		@Property(name = "sling.servlet.extensions", value = "bin", propertyPrivate = true),
-		@Property(name = SlingBlobServlet.EXTERNAL_URL_NAME, value = SlingBlobServlet.EXTERNAL_URL_DEFAULT) })
+		@Property(name = SlingBlobServlet.EXTERNAL_URL_NAME, value = SlingBlobServlet.EXTERNAL_URL_DEFAULT),
+		@Property(name = SlingBlobServlet.EXTERNAL_LOGIN_NAME, value = SlingBlobServlet.EXTERNAL_LOGIN_DEFAULT),
+		@Property(name = SlingBlobServlet.EXTERNAL_PASSWORD_NAME, value = SlingBlobServlet.EXTERNAL_PASSWORD_DEFAULT), })
 public class SlingBlobServlet extends SlingAllMethodsServlet {
 
 	private static final long serialVersionUID = -8867615561279547594L;
@@ -45,11 +48,23 @@ public class SlingBlobServlet extends SlingAllMethodsServlet {
 
 	protected static final String EXTERNAL_URL_DEFAULT = "http://localhost:4502/bin/jms/blob.bin";
 
+	protected static final String EXTERNAL_LOGIN_NAME = "externalLogin";
+
+	protected static final String EXTERNAL_LOGIN_DEFAULT = "admin";
+
+	protected static final String EXTERNAL_PASSWORD_NAME = "externalPassword";
+
+	protected static final String EXTERNAL_PASSWORD_DEFAULT = "admin";
+
 	private Map<String, String> mappings;
 
 	private ResourceResolver adminResolver;
 
 	private String externalUrl;
+
+	private String login;
+
+	private String password;
 
 	@Reference
 	private ResourceResolverFactory resolverFactory;
@@ -58,6 +73,8 @@ public class SlingBlobServlet extends SlingAllMethodsServlet {
 	protected void activate(ComponentContext ctx) throws LoginException {
 		Dictionary<?, ?> config = ctx.getProperties();
 		externalUrl = PropertiesUtil.toString(config.get(EXTERNAL_URL_NAME), EXTERNAL_URL_DEFAULT);
+		login = PropertiesUtil.toString(config.get(EXTERNAL_LOGIN_NAME), EXTERNAL_LOGIN_DEFAULT);
+		password = PropertiesUtil.toString(config.get(EXTERNAL_PASSWORD_NAME), EXTERNAL_PASSWORD_DEFAULT);
 
 		mappings = new HashMap<String, String>();
 		adminResolver = resolverFactory.getAdministrativeResourceResolver(null);
@@ -102,6 +119,14 @@ public class SlingBlobServlet extends SlingAllMethodsServlet {
 		} while (mappings.containsKey(uuid));
 		mappings.put(uuid, path);
 		return externalUrl + "/" + uuid;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 	private javax.jcr.Property getProperty(String path) throws IOException {

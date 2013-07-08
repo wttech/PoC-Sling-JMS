@@ -13,6 +13,7 @@ import org.apache.activemq.command.ActiveMQBlobMessage;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthenticationException;
+import org.apache.http.auth.ContextAwareAuthScheme;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -20,8 +21,14 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 public class SlingBlobStrategy implements BlobDownloadStrategy, BlobUploadStrategy {
+
+	private static final String LOGIN_PARAMETER = SlingBlobStrategy.class.getName() + ".login";
+
+	private static final String PASSWORD_PARAMETER = SlingBlobStrategy.class.getName() + ".password";
 
 	private SlingBlobServlet blobServlet;
 
@@ -46,6 +53,8 @@ public class SlingBlobStrategy implements BlobDownloadStrategy, BlobUploadStrate
 		if (!message.getBooleanProperty("jcr_blob")) {
 			return blobUploadStrategy.uploadFile(message, file);
 		}
+		message.setStringProperty(LOGIN_PARAMETER, blobServlet.getLogin());
+		message.setStringProperty(PASSWORD_PARAMETER, blobServlet.getPassword());
 		return new URL(blobServlet.addMapping(file.getPath()));
 	}
 
@@ -60,9 +69,10 @@ public class SlingBlobStrategy implements BlobDownloadStrategy, BlobUploadStrate
 			return blobDownloadStrategy.getInputStream(message);
 		}
 		HttpClient client = new DefaultHttpClient();
+		HttpContext context = new BasicHttpContext();
 		HttpUriRequest request = new HttpGet(message.getRemoteBlobUrl());
-		authenticate(request);
-		HttpResponse response = client.execute(request);
+		authenticate(request, context, message);
+		HttpResponse response = client.execute(request, context);
 		return response.getEntity().getContent();
 	}
 
@@ -73,15 +83,20 @@ public class SlingBlobStrategy implements BlobDownloadStrategy, BlobUploadStrate
 			return;
 		}
 		HttpClient client = new DefaultHttpClient();
+		HttpContext context = new BasicHttpContext();
 		HttpUriRequest request = new HttpDelete(message.getRemoteBlobUrl());
-		authenticate(request);
-		client.execute(request);
+		authenticate(request, context, message);
+		client.execute(request, context);
 	}
 
-	private void authenticate(HttpRequest request) throws IOException {
+	private void authenticate(HttpRequest request, HttpContext context, ActiveMQBlobMessage message)
+			throws IOException, JMSException {
 		try {
-			UsernamePasswordCredentials creds = new UsernamePasswordCredentials("admin", "admin");
-			request.addHeader(new BasicScheme().authenticate(creds, request));
+			String login = message.getStringProperty(LOGIN_PARAMETER);
+			String password = message.getStringProperty(PASSWORD_PARAMETER);
+			ContextAwareAuthScheme authScheme = new BasicScheme();
+			UsernamePasswordCredentials creds = new UsernamePasswordCredentials(login, password);
+			authScheme.authenticate(creds, request, context);
 		} catch (AuthenticationException e) {
 			throw new IOException(e);
 		}
