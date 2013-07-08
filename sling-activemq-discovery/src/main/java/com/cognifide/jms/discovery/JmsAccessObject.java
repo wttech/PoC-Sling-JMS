@@ -25,7 +25,9 @@ public class JmsAccessObject {
 
 	private final Connection connection;
 
-	private final Session session;
+	private final Session consumerSession;
+
+	private final Session producerSession;
 
 	private final MessageConsumer consumer;
 
@@ -34,16 +36,18 @@ public class JmsAccessObject {
 	public JmsAccessObject(JmsConnectionProvider connectionProvider) throws JMSException {
 		connection = connectionProvider.getConnection();
 		connection.start();
-		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		Destination destination = session.createTopic(JmsDiscoveryService.TOPIC);
-		consumer = session.createConsumer(destination);
-		producer = session.createProducer(destination);
+		consumerSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		producerSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		Destination destination = consumerSession.createTopic(JmsDiscoveryService.TOPIC);
+		consumer = consumerSession.createConsumer(destination);
+		producer = producerSession.createProducer(destination);
 	}
 
 	public void close() throws JMSException {
 		consumer.close();
+		consumerSession.close();
 		producer.close();
-		session.close();
+		producerSession.close();
 		connection.close();
 	}
 
@@ -62,14 +66,14 @@ public class JmsAccessObject {
 	}
 
 	public void sendObjectMsg(Serializable object) throws JMSException {
-		ObjectMessage objMsg = session.createObjectMessage(object);
+		ObjectMessage objMsg = consumerSession.createObjectMessage(object);
 		producer.send(objMsg);
 	}
 
 	public void sendElectionReq(ElectionRequestType type, String clusterId, String slingId)
 			throws JMSException {
 		ElectionRequest req = new ElectionRequest(type, clusterId, slingId);
-		ObjectMessage msg = session.createObjectMessage(req);
+		ObjectMessage msg = consumerSession.createObjectMessage(req);
 		producer.send(msg);
 	}
 

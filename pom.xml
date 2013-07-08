@@ -195,6 +195,14 @@
 				<artifactId>geronimo-jms_1.1_spec</artifactId>
 				<version>1.1.1</version>
 			</dependency>
+			
+			<!-- active mq -->
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-core</artifactId>
+				<version>5.7.0</version>
+				<scope>provided</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -202,5 +210,6 @@
 		<module>sling-activemq-api</module>
 		<module>sling-activemq-core</module>
 		<module>sling-activemq-discovery</module>
+		<module>sling-activemq-sandbox</module>
 	</modules>
 </project>
