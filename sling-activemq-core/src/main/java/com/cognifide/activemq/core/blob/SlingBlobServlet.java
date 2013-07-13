@@ -1,4 +1,4 @@
-package com.cognifide.activemq.blob;
+package com.cognifide.activemq.core.blob;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,7 +39,7 @@ import org.osgi.service.component.ComponentContext;
 		@Property(name = "sling.servlet.extensions", value = "bin", propertyPrivate = true),
 		@Property(name = SlingBlobServlet.EXTERNAL_URL_NAME, value = SlingBlobServlet.EXTERNAL_URL_DEFAULT),
 		@Property(name = SlingBlobServlet.EXTERNAL_LOGIN_NAME, value = SlingBlobServlet.EXTERNAL_LOGIN_DEFAULT),
-		@Property(name = SlingBlobServlet.EXTERNAL_PASSWORD_NAME, value = SlingBlobServlet.EXTERNAL_PASSWORD_DEFAULT), })
+		@Property(name = SlingBlobServlet.EXTERNAL_PASSWORD_NAME, value = SlingBlobServlet.EXTERNAL_PASSWORD_DEFAULT)})
 public class SlingBlobServlet extends SlingAllMethodsServlet {
 
 	private static final long serialVersionUID = -8867615561279547594L;

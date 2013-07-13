@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.jms.api.JmsConnectionProvider;
+import com.cognifide.jms.api.ObjectMessageUtils;
 import com.cognifide.jms.discovery.election.ElectionRequest;
 import com.cognifide.jms.discovery.election.ElectionRequestType;
 import com.cognifide.jms.discovery.update.UpdateMessage;
@@ -60,9 +61,7 @@ public class JmsAccessObject {
 			LOG.error("Wrong type of message: ", msg.getClass());
 			return null;
 		}
-		ObjectMessage objectMsg = (ObjectMessage) msg;
-		Serializable object = getObjectInOwnClassLoader(objectMsg);
-		return object;
+		return ObjectMessageUtils.getObjectInContext((ObjectMessage) msg, UpdateMessage.class);
 	}
 
 	public void sendObjectMsg(Serializable object) throws JMSException {
@@ -75,17 +74,5 @@ public class JmsAccessObject {
 		ElectionRequest req = new ElectionRequest(type, clusterId, slingId);
 		ObjectMessage msg = consumerSession.createObjectMessage(req);
 		producer.send(msg);
-	}
-
-	private Serializable getObjectInOwnClassLoader(ObjectMessage objectMsg) throws JMSException {
-		// TODO - it has to be a better way to do it
-		ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
-		Thread.currentThread().setContextClassLoader(UpdateMessage.class.getClassLoader());
-		try {
-			Serializable object = objectMsg.getObject();
-			return object;
-		} finally {
-			Thread.currentThread().setContextClassLoader(oldCl);
-		}
 	}
 }

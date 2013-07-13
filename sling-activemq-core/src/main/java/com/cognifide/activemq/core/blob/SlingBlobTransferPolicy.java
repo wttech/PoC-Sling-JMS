@@ -1,4 +1,4 @@
-package com.cognifide.activemq.blob;
+package com.cognifide.activemq.core.blob;
 
 import org.apache.activemq.blob.BlobDownloadStrategy;
 import org.apache.activemq.blob.BlobTransferPolicy;

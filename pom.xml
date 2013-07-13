@@ -10,7 +10,7 @@
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Sling ActiveMq parent</name>
+	<name>Sling ActiveMQ parent</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -180,6 +180,12 @@
 				<version>2.2.0</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.4</version>
+				<scope>provided</scope>
+			</dependency>
 
 			<!-- commons -->
 			<dependency>
@@ -196,19 +202,12 @@
 				<version>1.1.1</version>
 			</dependency>
 			
-			<!-- active mq -->
+			<!-- activemq -->
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-core</artifactId>
+				<scope>provided</scope>
 				<version>5.7.0</version>
-				<scope>provided</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.4</version>
-				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -218,5 +217,7 @@
 		<module>sling-activemq-core</module>
 		<module>sling-activemq-discovery</module>
 		<module>sling-activemq-sandbox</module>
+		<module>sling-activemq-session</module>
+		<module>sling-activemq-osgi</module>
 	</modules>
 </project>

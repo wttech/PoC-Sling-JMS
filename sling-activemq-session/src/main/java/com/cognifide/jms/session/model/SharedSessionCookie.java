@@ -1,4 +1,4 @@
-package com.cognifide.jms.sandbox.session.model;
+package com.cognifide.jms.session.model;
 
 import javax.servlet.http.Cookie;
 
@@ -34,14 +34,21 @@ public class SharedSessionCookie {
 		}
 	}
 
-	public void set(String instanceId, String sharedSessionId) {
-		String value = String.format("%s|%s", instanceId, sharedSessionId);
-		Cookie cookie = new Cookie(SHARED_SESSION_COOKIE, value);
-		cookie.setMaxAge(-1);
-		response.addCookie(cookie);
+	private SharedSessionCookie(SlingHttpServletResponse response, String instanceId, String sharedSessionId) {
+		this.response = response;
+		this.instanceId = instanceId;
+		this.sharedSessionId = sharedSessionId;
+		this.cookieExists = true;
 	}
 
-	public boolean isCookieExists() {
+	public SharedSessionCookie set(String instanceId, String sharedSessionId) {
+		String header = String.format("%s=%s|%s; Path=/; HttpOnly", SHARED_SESSION_COOKIE, instanceId,
+				sharedSessionId);
+		response.setHeader("Set-cookie", header);
+		return new SharedSessionCookie(response, instanceId, sharedSessionId);
+	}
+
+	public boolean exists() {
 		return cookieExists;
 	}
 

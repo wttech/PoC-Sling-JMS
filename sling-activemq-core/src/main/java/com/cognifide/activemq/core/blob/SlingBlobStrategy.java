@@ -1,4 +1,4 @@
-package com.cognifide.activemq.blob;
+package com.cognifide.activemq.core.blob;
 
 import java.io.File;
 import java.io.IOException;

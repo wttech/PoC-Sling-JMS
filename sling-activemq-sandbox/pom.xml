@@ -88,6 +88,10 @@
 			<groupId>org.apache.sling</groupId>
 			<artifactId>org.apache.sling.commons.osgi</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
 
 		<!-- commons -->
 		<dependency>
@@ -100,17 +104,11 @@
 			<groupId>org.apache.geronimo.specs</groupId>
 			<artifactId>geronimo-jms_1.1_spec</artifactId>
 		</dependency>
-
+		
 		<!-- activemq -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-core</artifactId>
-		</dependency>
-		
-		
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
 		</dependency>
 	</dependencies>
 </project>

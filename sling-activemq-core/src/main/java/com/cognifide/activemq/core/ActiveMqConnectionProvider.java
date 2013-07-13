@@ -1,10 +1,10 @@
-package com.cognifide.activemq;
+package com.cognifide.activemq.core;
 
 import java.util.Dictionary;
 
-import javax.jms.Connection;
 import javax.jms.JMSException;
 
+import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -15,8 +15,8 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.osgi.service.component.ComponentContext;
 
-import com.cognifide.activemq.blob.SlingBlobServlet;
-import com.cognifide.activemq.blob.SlingBlobTransferPolicy;
+import com.cognifide.activemq.core.blob.SlingBlobServlet;
+import com.cognifide.activemq.core.blob.SlingBlobTransferPolicy;
 import com.cognifide.jms.api.JmsConnectionProvider;
 
 @Component(immediate = true, metatype = false)
@@ -32,7 +32,7 @@ public class ActiveMqConnectionProvider implements JmsConnectionProvider {
 
 	@Reference
 	private SlingBlobServlet blobServlet;
-	
+
 	@Activate
 	protected void activate(ComponentContext context) {
 		Dictionary<?, ?> config = context.getProperties();
@@ -41,7 +41,7 @@ public class ActiveMqConnectionProvider implements JmsConnectionProvider {
 		connectionFactory.setBlobTransferPolicy(new SlingBlobTransferPolicy(blobServlet));
 	}
 
-	public Connection getConnection() throws JMSException {
-		return connectionFactory.createConnection();
+	public ActiveMQConnection getConnection() throws JMSException {
+		return (ActiveMQConnection) connectionFactory.createConnection();
 	}
 }
