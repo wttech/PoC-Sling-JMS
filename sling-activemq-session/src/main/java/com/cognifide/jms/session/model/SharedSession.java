@@ -3,13 +3,12 @@ package com.cognifide.jms.session.model;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.jms.JMSException;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang.ArrayUtils;
 
 public class SharedSession {
 	private final Map<String, Object> attributes;
@@ -41,8 +40,8 @@ public class SharedSession {
 
 	public void copyTo(HttpSession session) {
 		for (Entry<String, Object> entry : attributes.entrySet()) {
-			if (session.getValue(entry.getKey()) == null) {
-				session.putValue(entry.getKey(), entry.getValue());
+			if (session.getAttribute(entry.getKey()) == null) {
+				session.setAttribute(entry.getKey(), entry.getValue());
 			}
 		}
 	}
@@ -89,10 +88,11 @@ public class SharedSession {
 			different = true;
 		}
 
-		String[] valueNames = httpSession.getValueNames();
+		@SuppressWarnings("unchecked")
+		List<String> valueNames = Collections.list(httpSession.getAttributeNames());
 		Map<String, Object> values = new HashMap<String, Object>();
 		for (String key : valueNames) {
-			Object value = httpSession.getValue(key);
+			Object value = httpSession.getAttribute(key);
 			if (value != null && !value.equals(attributes.get(key))) {
 				different = true;
 				values.put(key, value);
@@ -100,7 +100,7 @@ public class SharedSession {
 		}
 
 		for (String key : attributes.keySet()) {
-			if (!ArrayUtils.contains(valueNames, key)) {
+			if (!valueNames.contains(key)) {
 				different = true;
 				values.put(key, null);
 			}

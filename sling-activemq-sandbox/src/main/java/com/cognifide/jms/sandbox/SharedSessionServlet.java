@@ -2,6 +2,7 @@ package com.cognifide.jms.sandbox;
 
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -26,11 +27,14 @@ public class SharedSessionServlet extends SlingSafeMethodsServlet {
 		try {
 			HttpSession session = request.getSession();
 			if ("/add".equals(suffix)) {
-				session.putValue(new Date().toString(), UUID.randomUUID().toString());
+				session.setAttribute(new Date().toString(), UUID.randomUUID().toString());
 			}
 			PrintWriter writer = response.getWriter();
-			for (String name : session.getValueNames()) {
-				writer.append(name).append(": ").append(session.getValue(name).toString()).append('\n');
+			@SuppressWarnings("unchecked")
+			Enumeration<String> names = session.getAttributeNames();
+			while (names.hasMoreElements()) {
+				String name = names.nextElement();
+				writer.append(name).append(": ").append(session.getAttribute(name).toString()).append('\n');
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
