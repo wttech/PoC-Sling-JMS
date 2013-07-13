@@ -61,7 +61,7 @@
 							!org.apache.commons.codec.binary.*,
 							*
 						</Import-Package>
-						<Export-Package>javax.jms.*,org.apache.activemq.*;version=5.7.0</Export-Package>
+						<Export-Package>javax.jms.*,org.apache.activemq.*;version=5.7.0;-split-package:=merge-first</Export-Package>
 						<Embed-Dependency>activemq-core,geronimo-j2ee-management_1.1_spec,ejb-api,jaxrpc-api</Embed-Dependency>
 					</instructions>
 				</configuration>
@@ -74,24 +74,6 @@
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-
-		<!-- sling -->
-		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.commons.osgi</artifactId>
 		</dependency>
 
 		<!-- activemq -->

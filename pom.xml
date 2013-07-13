@@ -148,6 +148,18 @@
 				<version>1.4.0</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.osgi.foundation</artifactId>
+				<version>1.2.0</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>javax.servlet</artifactId>
+				<version>1.0.0</version>
+				<scope>provided</scope>
+			</dependency>
 
 			<!-- sling -->
 			<dependency>
@@ -180,12 +192,6 @@
 				<version>2.2.0</version>
 				<scope>provided</scope>
 			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.4</version>
-				<scope>provided</scope>
-			</dependency>
 
 			<!-- commons -->
 			<dependency>
@@ -202,12 +208,34 @@
 				<version>1.1.1</version>
 			</dependency>
 			
+			<!-- javax -->
+			<dependency>
+				<groupId>javax.jcr</groupId>
+				<artifactId>jcr</artifactId>
+				<version>2.0</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.4</version>
+				<scope>provided</scope>
+			</dependency>
+
 			<!-- activemq -->
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-core</artifactId>
 				<scope>provided</scope>
 				<version>5.7.0</version>
+			</dependency>
+			
+			<!-- logging -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.6.1</version>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
