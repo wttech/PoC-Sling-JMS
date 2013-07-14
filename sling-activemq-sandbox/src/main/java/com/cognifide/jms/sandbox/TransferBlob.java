@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.BlobMessage;
-import org.apache.activemq.command.ActiveMQBlobMessage;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
@@ -86,7 +85,7 @@ public class TransferBlob extends SlingSafeMethodsServlet {
 
 	private void send() throws JMSException, MalformedURLException {
 		String propertyPath = "/apps/geometrixx/components/asseteditor/asseteditor.jsp/jcr:content/jcr:data";
-		ActiveMQBlobMessage msg = (ActiveMQBlobMessage) session.createBlobMessage(new File(propertyPath));
+		BlobMessage msg = session.createBlobMessage(new File(propertyPath));
 		msg.setBooleanProperty("jcr_blob", true);
 		producer.send(msg);
 	}
