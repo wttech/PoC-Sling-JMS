@@ -22,7 +22,7 @@ Reading object messages in OSGi container can be tricky, as the JMS client lives
 
 ### sling-activemq-core
 
-This service contains implementaion of `JmsConnectionProvider` service. Besides that it handles Sling blob transfers.
+This service contains implementation of `JmsConnectionProvider` service. Besides that it implements a few useful features.
 
 #### Sling blob transfers
 
@@ -32,6 +32,23 @@ Sling blob transfers allows to send binary JCR properties using dedicated Sling 
 	BlobMessage msg = session.createBlobMessage(new File(propertyPath));
 	msg.setBooleanProperty("jcr_blob", true);
 	producer.send(msg);
+
+#### OSGi MessageListener
+
+`MessageListenerRegistry` OSGi components collects services implementing `javax.jms.MessageListener` interface and creates appropriate message consumer for them using configuration set in the SCR properties. Example service is `com.cognifide.jms.session.SharedSessionStorage`:
+
+	@Component(immediate = true, metatype = false)
+	@Service(value = { SharedSessionStorage.class, MessageListener.class })
+	@Properties({
+		@Property(name = JmsConstants.CONSUMER_SUBJECT, value = "sharedSessionTopic"),
+		@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC) })
+	public class SharedSessionStorage implements MessageListener {
+	
+		@Override
+		public synchronized void onMessage(Message msg) {
+			…
+		}
+	}
 
 ### sling-activemq-discovery
 

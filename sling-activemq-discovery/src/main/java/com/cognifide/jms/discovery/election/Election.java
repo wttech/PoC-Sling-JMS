@@ -11,7 +11,7 @@ import javax.jms.JMSException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.jms.discovery.JmsAccessObject;
+import com.cognifide.jms.discovery.DiscoveryJmsProducer;
 
 public class Election {
 
@@ -21,7 +21,7 @@ public class Election {
 
 	private final String slingId;
 
-	private final JmsAccessObject jms;
+	private final DiscoveryJmsProducer jms;
 
 	private final ExecutorService executor;
 
@@ -29,7 +29,7 @@ public class Election {
 
 	private volatile ElectionState state;
 
-	public Election(String clusterId, String slingId, JmsAccessObject jms) throws JMSException {
+	public Election(String clusterId, String slingId, DiscoveryJmsProducer jms) throws JMSException {
 		this.jms = jms;
 		this.slingId = slingId;
 		this.clusterId = clusterId;

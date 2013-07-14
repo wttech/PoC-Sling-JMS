@@ -8,30 +8,30 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.jms.Connection;
-import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
-import javax.jms.Session;
 
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.jms.api.JmsConnectionProvider;
+import com.cognifide.jms.api.JmsConstants;
 import com.cognifide.jms.api.ObjectMessageUtils;
 import com.cognifide.jms.session.model.SessionDiff;
 import com.cognifide.jms.session.model.SharedSession;
 
 @Component(immediate = true, metatype = false)
-@Service(value = SharedSessionStorage.class)
+@Service(value = { SharedSessionStorage.class, MessageListener.class })
+@Properties({
+	@Property(name = JmsConstants.CONSUMER_SUBJECT, value = SharedSessionStorage.TOPIC),
+	@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC) })
 public class SharedSessionStorage implements MessageListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SharedSessionStorage.class);
@@ -42,20 +42,7 @@ public class SharedSessionStorage implements MessageListener {
 
 	public static final String SHARED_SESSION_ID = PREFIX + ".sharedSessionId";
 
-	public static final String MAX_INACTIVE_INTERVAL = PREFIX + ".maxInactiveInterval";
-
-	public static final String TO_REMOVE = PREFIX + ".toRemove";
-
-	static final String TOPIC = SharedSessionStorage.class.getName();
-
-	@Reference
-	private JmsConnectionProvider connectionProvider;
-
-	private Connection connection;
-
-	private Session session;
-
-	private MessageConsumer consumer;
+	static final String TOPIC = "sharedSessionTopic";
 
 	private Map<String, SharedSession> sessions;
 
@@ -64,12 +51,6 @@ public class SharedSessionStorage implements MessageListener {
 	@Activate
 	public void activate() throws JMSException, MalformedURLException {
 		sessions = new HashMap<String, SharedSession>();
-		connection = connectionProvider.getConnection();
-		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		Destination dest = session.createTopic(TOPIC);
-		consumer = session.createConsumer(dest);
-		connection.start();
-		consumer.setMessageListener(this);
 
 		executor = Executors.newSingleThreadScheduledExecutor();
 		executor.scheduleAtFixedRate(new Runnable() {
@@ -82,9 +63,6 @@ public class SharedSessionStorage implements MessageListener {
 
 	@Deactivate
 	public void deactivate() throws JMSException {
-		consumer.close();
-		session.close();
-		connection.close();
 		executor.shutdown();
 	}
 

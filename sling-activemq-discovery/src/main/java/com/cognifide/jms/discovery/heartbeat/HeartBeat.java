@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.jms.api.JmsConnectionProvider;
-import com.cognifide.jms.discovery.JmsAccessObject;
+import com.cognifide.jms.discovery.DiscoveryJmsProducer;
 import com.cognifide.jms.discovery.update.UpdateMessage;
 
 @Component(immediate = true, metatype = true)
@@ -56,7 +56,7 @@ public class HeartBeat implements Runnable {
 
 	private BundleContext bundleContext;
 
-	private JmsAccessObject jms;
+	private DiscoveryJmsProducer jms;
 
 	@Activate
 	protected void activate(ComponentContext context) throws JMSException {
@@ -65,7 +65,7 @@ public class HeartBeat implements Runnable {
 		Dictionary<?, ?> config = context.getProperties();
 		this.clusterId = PropertiesUtil.toString(config.get(CLUSTER_ID_PROPERTY_NAME),
 				CLUSTER_ID_PROPERTY_DEFAULT);
-		jms = new JmsAccessObject(connectionProvider);
+		jms = new DiscoveryJmsProducer(connectionProvider);
 	}
 
 	protected void deactivate() throws JMSException {

@@ -10,7 +10,7 @@ import org.apache.sling.discovery.TopologyView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.jms.discovery.JmsAccessObject;
+import com.cognifide.jms.discovery.DiscoveryJmsProducer;
 import com.cognifide.jms.discovery.RefreshType;
 import com.cognifide.jms.discovery.update.UpdatesManager;
 
@@ -26,10 +26,10 @@ public class ElectionManager {
 
 	private final UpdatesManager updateMessageStorage;
 
-	private final JmsAccessObject jms;
+	private final DiscoveryJmsProducer jms;
 
 	public ElectionManager(String localSlingId, String localClusterId,
-			UpdatesManager updateMessageStorage, JmsAccessObject jms) {
+			UpdatesManager updateMessageStorage, DiscoveryJmsProducer jms) {
 		this.elections = new HashMap<String, Election>();
 		this.localSlingId = localSlingId;
 		this.localClusterId = localClusterId;
