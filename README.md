@@ -2,6 +2,8 @@
 
 ## Bundles
 
+`sling-activemq-osgi`, `sling-activemq-api` and `sling-activemq-core` are main bundles. The other bundles are some implementations using the JMS.
+
 ### sling-activemq-osgi
 
 This bundle contains ActiveMQ core package with all necessary dependencies marked as embedded. It exports `org.apache.activemq.*` Java package.
@@ -10,11 +12,11 @@ This bundle contains ActiveMQ core package with all necessary dependencies marke
 
 This package contains declarations of useful services.
 
-#### `JmsConnectionProvider`
+`JmsConnectionProvider`
 
 OSGi service providing the JMS connection.
 
-#### `ObjectMessageUtils`
+`ObjectMessageUtils`
 
 Reading object messages in OSGi container can be tricky, as the JMS client lives in different bundle than the serialized class. Methods in this util switches thread class loader for the moment of deserializing JMS object message.
 
@@ -39,6 +41,30 @@ It's a JMS implementation of [Sling Discovery API](http://sling.apache.org/docum
 
 Example usage of shared session and Sling blob transfer.
 
+#### Blob
+
+Waiting for the message:
+
+	curl localhost:4503/bin/cognifide/blob.txt/recv
+
+Sending message (in other terminal window):
+
+	curl localhost:4504/bin/cognifide/blob.txt/send
+    
+#### Session
+
+Display current session:
+
+	curl localhost:4503/bin/cognifide/session.txt
+	
+Add random value to the current session
+
+	curl localhost:4504/bin/cognifide/session/add.txt
+
 ### sling-activemq-session
 
-Bundle provides sharing HTTP session feature based on JMS and special servlet filter `com.cognifide.jms.session.SharedSessionFilter`.
+Bundle provides sharing HTTP session feature based on JMS.
+
+Besides the ordinary `JSESSIONID` each user gets custom `JSESSIONID_SHARED` cookie. This cookie consists of two concatenated UUIDs: `INSTANCE_ID` and `SHARED_SESSION_ID`. Each modification of the `HttpSession` is mapped to the current `SharedSession` (got from the `SharedSessionStorage` using it's id) and broadcasted to all instances. The component responsible for this logic is `SharedSessionFilter`.
+
+When `SharedSessionFilter` notices that `INSTANCE_ID` from the cookie isn't the current instance id (eg. instance has been changed by the loadbalancer), content of the `SharedSession` is copied back to the `HttpSession`.
