@@ -8,4 +8,6 @@ public class JmsConstants {
 	public static final String TYPE_TOPIC = "TOPIC";
 
 	public static final String TYPE_QUEUE = "QUEUE";
+
+	public static final Object FILTER = "filter";
 }
