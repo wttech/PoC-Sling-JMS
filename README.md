@@ -59,7 +59,18 @@ will match following message:
 
 ## sling-activemq-discovery
 
-It's a JMS implementation of [Sling Discovery API](http://sling.apache.org/documentation/bundles/discovery-api-and-impl.html).
+It's a JMS implementation of [Sling Discovery API](http://sling.apache.org/documentation/bundles/discovery-api-and-impl.html). `HeartBeat` component sends an update every 30 seconds (it can be configured). `JmsDiscoveryService` receives these updates and maintains topology model.
+
+If the created model lacks of leader for some cluster, there is election process performed.
+
+* `WHO_IS_LEADER` request is sent,
+* component waits 10 seconds for `I_AM_LEADER` message,
+  * if someone sends it, the election will be over,
+* if there is still no leader, `ELECTION` request is sent,
+* all instances in given cluster have 5 seconds to send `VOTE`s with their own Sling `instanceId`,
+* after that, instance with the smallest `instanceId` sends `I_AM_LEADER` message.
+
+The whole process is performed in the cluster scope.
 
 ## sling-activemq-session
 
@@ -92,3 +103,9 @@ Display current session:
 Add random value to the current session
 
 	curl localhost:4504/bin/cognifide/session/add.txt
+	
+#### Discovery
+
+Display current topology:
+
+	curl localhost:4502/bin/jms/discovery/info.txt
