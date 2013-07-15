@@ -1,6 +1,6 @@
 # Sling ActiveMQ
 
-`sling-activemq-osgi`, `sling-activemq-api` and `sling-activemq-core` are main bundles. The other bundles are some implementations using the JMS.
+`sling-activemq-osgi`, `sling-activemq-api` and `sling-activemq-core` are bundles integrating ActiveMQ with Sling framework. `sling-activemq-session` and `sling-activemq-discovery` implements some features using ActiveMQ. `sling-activemq-sandbox` is a playground.
 
 ## sling-activemq-osgi
 
@@ -28,7 +28,7 @@ Sling blob transfers allows to send binary JCR properties using dedicated Sling 
 
 	String propertyPath = "/apps/.../jcr:content/jcr:data";
 	BlobMessage msg = session.createBlobMessage(new File(propertyPath));
-	msg.setBooleanProperty("jcr_blob", true);
+	msg.setBooleanProperty(JmsConstants.JCR_BLOB_MESSAGE, true);
 	producer.send(msg);
 
 #### OSGi MessageListener
@@ -61,6 +61,14 @@ will match following message:
 
 It's a JMS implementation of [Sling Discovery API](http://sling.apache.org/documentation/bundles/discovery-api-and-impl.html).
 
+## sling-activemq-session
+
+Bundle provides sharing HTTP session feature based on JMS.
+
+Besides the ordinary `JSESSIONID` each user gets custom `JSESSIONID_SHARED` cookie. This cookie consists of two concatenated UUIDs: `INSTANCE_ID` and `SHARED_SESSION_ID`. Each modification of the `HttpSession` is mapped to the current `SharedSession` (got from the `SharedSessionStorage` using it's id) and broadcasted to all instances. The component responsible for this logic is `SharedSessionFilter`.
+
+When `SharedSessionFilter` notices that `INSTANCE_ID` from the cookie isn't the current instance id (eg. instance has been changed by the loadbalancer), content of the `SharedSession` is copied back to the `HttpSession`.
+
 ## sling-activemq-sandbox
 
 Example usage of shared session and Sling blob transfer.
@@ -84,11 +92,3 @@ Display current session:
 Add random value to the current session
 
 	curl localhost:4504/bin/cognifide/session/add.txt
-
-## sling-activemq-session
-
-Bundle provides sharing HTTP session feature based on JMS.
-
-Besides the ordinary `JSESSIONID` each user gets custom `JSESSIONID_SHARED` cookie. This cookie consists of two concatenated UUIDs: `INSTANCE_ID` and `SHARED_SESSION_ID`. Each modification of the `HttpSession` is mapped to the current `SharedSession` (got from the `SharedSessionStorage` using it's id) and broadcasted to all instances. The component responsible for this logic is `SharedSessionFilter`.
-
-When `SharedSessionFilter` notices that `INSTANCE_ID` from the cookie isn't the current instance id (eg. instance has been changed by the loadbalancer), content of the `SharedSession` is copied back to the `HttpSession`.
