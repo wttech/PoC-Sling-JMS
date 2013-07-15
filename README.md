@@ -1,14 +1,12 @@
 # Sling ActiveMQ
 
-## Bundles
-
 `sling-activemq-osgi`, `sling-activemq-api` and `sling-activemq-core` are main bundles. The other bundles are some implementations using the JMS.
 
-### sling-activemq-osgi
+## sling-activemq-osgi
 
 This bundle contains ActiveMQ core package with all necessary dependencies marked as embedded. It exports `org.apache.activemq.*` Java package.
 
-### sling-activemq-api
+## sling-activemq-api
 
 This package contains declarations of useful services.
 
@@ -20,13 +18,13 @@ OSGi service providing the JMS connection.
 
 Reading object messages in OSGi container can be tricky, as the JMS client lives in different bundle than the serialized class. Methods in this util switches thread class loader for the moment of deserializing JMS object message.
 
-### sling-activemq-core
+## sling-activemq-core
 
 This service contains implementation of `JmsConnectionProvider` service. Besides that it implements a few useful features.
 
 #### Sling blob transfers
 
-Sling blob transfers allows to send binary JCR properties using dedicated Sling HTTP servlet rather than ActiveMQ channel. In order to use it, first configure OSGi service `com.cognifide.activemq.core.blob.SlingBlobServlet`. You need to enter URL and credentials under which the servlet will be available for other Sling instances. After that any JCR property can be send as follows:
+Sling blob transfers allows to send binary JCR properties using dedicated Sling HTTP servlet rather than ActiveMQ channel. In order to use it, first configure OSGi service `com.cognifide.activemq.core.blob.SlingBlobServlet`. You need to enter URL and credentials under which the servlet will be available for other Sling instances. After that any JCR property can be sent as follows:
 
 	String propertyPath = "/apps/.../jcr:content/jcr:data";
 	BlobMessage msg = session.createBlobMessage(new File(propertyPath));
@@ -50,11 +48,20 @@ Sling blob transfers allows to send binary JCR properties using dedicated Sling 
 		}
 	}
 
-### sling-activemq-discovery
+Listeners can also filter received messages by their JMS properties. Use `JmsConstants.FILTER` configuration property and [LDAP filter syntax](http://www.osgi.org/javadoc/r4v43/core/org/osgi/framework/Filter.html). Eg.:
+
+    @Property(name = JmsConstants.FILTER, value = "(action=REFRESH_TOPOLOGY)")
+
+will match following message:
+
+    Message msg = session.createMessage();
+    msg.setStringProperty("action", "REFRESH_TOPOLOGY");
+
+## sling-activemq-discovery
 
 It's a JMS implementation of [Sling Discovery API](http://sling.apache.org/documentation/bundles/discovery-api-and-impl.html).
 
-### sling-activemq-sandbox
+## sling-activemq-sandbox
 
 Example usage of shared session and Sling blob transfer.
 
@@ -78,7 +85,7 @@ Add random value to the current session
 
 	curl localhost:4504/bin/cognifide/session/add.txt
 
-### sling-activemq-session
+## sling-activemq-session
 
 Bundle provides sharing HTTP session feature based on JMS.
 
