@@ -9,6 +9,7 @@ public class JmsConstants {
 
 	public static final String TYPE_QUEUE = "QUEUE";
 
-	public static final Object FILTER = "filter";
+	public static final String FILTER = "filter";
+
 	public static final String JCR_BLOB_MESSAGE = "jcr_blob";
 }
