@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.jms.api.JmsConnectionProvider;
+import com.cognifide.jms.api.JmsConstants;
 
 @Component(immediate = true, metatype = false)
 @SlingServlet(paths = "/bin/cognifide/blob", extensions = "txt", generateService = true, generateComponent = false)
@@ -86,7 +87,7 @@ public class TransferBlob extends SlingSafeMethodsServlet {
 	private void send() throws JMSException, MalformedURLException {
 		String propertyPath = "/apps/geometrixx/components/asseteditor/asseteditor.jsp/jcr:content/jcr:data";
 		BlobMessage msg = session.createBlobMessage(new File(propertyPath));
-		msg.setBooleanProperty("jcr_blob", true);
+		msg.setBooleanProperty(JmsConstants.JCR_BLOB_MESSAGE, true);
 		producer.send(msg);
 	}
 
