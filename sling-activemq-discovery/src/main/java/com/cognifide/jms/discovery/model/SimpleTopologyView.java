@@ -102,12 +102,4 @@ public class SimpleTopologyView implements TopologyView {
 		}
 		return Collections.unmodifiableSet(clusterViews);
 	}
-
-	public String getInfo() {
-		StringBuilder builder = new StringBuilder();
-		for (ClusterView cluster : clusterViews) {
-			builder.append(((SimpleClusterView) cluster).getInfo());
-		}
-		return builder.toString();
-	}
 }

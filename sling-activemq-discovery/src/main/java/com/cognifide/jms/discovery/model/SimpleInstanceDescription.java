@@ -1,7 +1,6 @@
 package com.cognifide.jms.discovery.model;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -92,17 +91,4 @@ public class SimpleInstanceDescription implements InstanceDescription {
 		return new HashCodeBuilder(17, 37).append(clusterId).append(isLeader).append(isLocal)
 				.append(properties).append(slingId).toHashCode();
 	}
-
-	public String getInfo() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Sling id:   ").append(slingId).append('\n');
-		builder.append("Is leader:  ").append(isLeader).append('\n');
-		builder.append("Is local:   ").append(isLocal).append('\n');
-		builder.append("Properties:\n");
-		for (Entry<String, String> e : properties.entrySet()) {
-			builder.append(" * ").append(e.getKey()).append(": ").append(e.getValue()).append('\n');
-		}
-		return builder.toString();
-	}
-
 }

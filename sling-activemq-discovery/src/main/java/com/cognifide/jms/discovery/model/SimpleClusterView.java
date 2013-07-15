@@ -64,13 +64,4 @@ public class SimpleClusterView implements ClusterView {
 	public int hashCode() {
 		return new HashCodeBuilder(17, 37).append(id).append(instances).append(leader).toHashCode();
 	}
-
-	public String getInfo() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("### Cluster ").append(id).append(" ###\n");
-		for (InstanceDescription desc : instances) {
-			builder.append(((SimpleInstanceDescription) desc).getInfo()).append("\n");
-		}
-		return builder.toString();
-	}
 }
