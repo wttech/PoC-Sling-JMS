@@ -247,5 +247,6 @@
 		<module>sling-activemq-sandbox</module>
 		<module>sling-activemq-session</module>
 		<module>sling-activemq-osgi</module>
+		<module>sling-activemq-transport</module>
 	</modules>
 </project>
