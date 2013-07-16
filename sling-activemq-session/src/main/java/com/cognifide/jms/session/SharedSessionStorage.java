@@ -18,20 +18,19 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.jms.api.JmsConstants;
-import com.cognifide.jms.api.ObjectMessageUtils;
 import com.cognifide.jms.session.model.SessionDiff;
 import com.cognifide.jms.session.model.SharedSession;
 
 @Component(immediate = true, metatype = false)
 @Service(value = { SharedSessionStorage.class, MessageListener.class })
-@Properties({
-	@Property(name = JmsConstants.CONSUMER_SUBJECT, value = SharedSessionStorage.TOPIC),
-	@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC) })
+@Properties({ @Property(name = JmsConstants.CONSUMER_SUBJECT, value = SharedSessionStorage.TOPIC),
+		@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC) })
 public class SharedSessionStorage implements MessageListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SharedSessionStorage.class);
@@ -47,6 +46,9 @@ public class SharedSessionStorage implements MessageListener {
 	private Map<String, SharedSession> sessions;
 
 	private ScheduledExecutorService executor;
+
+	@Reference
+	private ClassLoaderRegistry clRegistry;
 
 	@Activate
 	public void activate() throws JMSException, MalformedURLException {
@@ -82,7 +84,7 @@ public class SharedSessionStorage implements MessageListener {
 			SharedSession session = getSharedSession(msg.getStringProperty(SHARED_SESSION_ID));
 			Action action = Action.valueOf(msg.getStringProperty(ACTION));
 			if (action == Action.UPDATE) {
-				SessionDiff diff = ObjectMessageUtils.getObject((ObjectMessage) msg, SessionDiff.class);
+				SessionDiff diff = getObject((ObjectMessage) msg);
 				session.applyDiff(diff);
 			} else if (action == Action.REFRESH) {
 				session.refreshSession();
@@ -99,6 +101,17 @@ public class SharedSessionStorage implements MessageListener {
 			if (!s.isValid()) {
 				iterator.remove();
 			}
+		}
+	}
+
+	private SessionDiff getObject(ObjectMessage msg) throws JMSException {
+		Thread currentThread = Thread.currentThread();
+		ClassLoader cl = currentThread.getContextClassLoader();
+		try {
+			currentThread.setContextClassLoader(clRegistry.getClassLoader());
+			return (SessionDiff) msg.getObject();
+		} finally {
+			currentThread.setContextClassLoader(cl);
 		}
 	}
 }

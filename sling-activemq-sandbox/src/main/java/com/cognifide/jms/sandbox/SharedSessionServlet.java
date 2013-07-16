@@ -3,7 +3,6 @@ package com.cognifide.jms.sandbox;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
@@ -27,7 +26,7 @@ public class SharedSessionServlet extends SlingSafeMethodsServlet {
 		try {
 			HttpSession session = request.getSession();
 			if ("/add".equals(suffix)) {
-				session.setAttribute(new Date().toString(), UUID.randomUUID().toString());
+				session.setAttribute(new Date().toString(), new Value());
 			}
 			PrintWriter writer = response.getWriter();
 			@SuppressWarnings("unchecked")
@@ -40,5 +39,4 @@ public class SharedSessionServlet extends SlingSafeMethodsServlet {
 			throw new ServletException(e);
 		}
 	}
-
 }
