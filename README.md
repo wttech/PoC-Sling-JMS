@@ -82,6 +82,15 @@ When `SharedSessionFilter` notices that `INSTANCE_ID` from the cookie isn't the 
 
 Please notice that all objects put into the `HttpSession` has to implement `Serializable` interface as they are transfered between instances. What's more, if used class are not available in the global OSGi class loader (eg. classes from your custom bundle), ActiveMQ consumer won't be able to deserialize them properly. In order to avoid `ClassNotFoundException` you can implement OSGi interface `com.cognifide.jms.api.session.ClassLoaderProvider`. `SharedSessionStorage` will try to deserialize object messages using each class loader provided by these services. 
 
+## sling-activemq-transport
+
+This bundle enhances Adobe CQ reverse-replication mechanism. In the out-of-the-box installation author instance pings the publish every 30 seconds asking for the content to be reverse-replicated. In the worst case users has to wait these 30 seconds before their content got replicated. With JMS publish instance can inform the author when the reverse-replication should happen. Bundle consists of two services:
+
+* `OutboxEventHandler` waits for events related to the reverse-replication outbox and send `POLL` message to the author whenever there is some new user-generated content,
+* `ReplicationAgentInvoker` works on the author and invokes reverse-replication process every time it gets `POLL` message form the author.
+
+The first service can be configured to send `POLL` message to instances with specified run mode (`author` by default) and to invoke agents with specific id (`publish_reverse`). It is recommended to disable default reverse-replication process by stopping `com.day.cq.replication.impl.ReverseReplicator` OSGi component.
+
 ## sling-activemq-sandbox
 
 Example usage of shared session and Sling blob transfer.
