@@ -37,6 +37,8 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+						<Import-Package>!com.day.cq.replication.impl.*,*</Import-Package>
+						<Export-Package>com.cognifide.jms.transport.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -56,28 +58,40 @@
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
 
+		<!-- felix -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.compendium</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.foundation</artifactId>
+		</dependency>
+
 		<!-- sling -->
 		<dependency>
 			<groupId>org.apache.sling</groupId>
 			<artifactId>org.apache.sling.api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.settings</artifactId>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.event</artifactId>
+		</dependency>
+
 		<!-- cq -->
 		<dependency>
 			<groupId>com.adobe.granite</groupId>
 			<artifactId>com.adobe.granite.replication.core</artifactId>
-			<version>5.5.18</version>
+			<version>5.12.2</version>
 			<scope>provided</scope>
-		</dependency>
-
-		<!-- commons -->
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
 		</dependency>
 
 		<!-- jms -->
@@ -90,6 +104,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<!-- jcr -->
+		<dependency>
+			<groupId>javax.jcr</groupId>
+			<artifactId>jcr</artifactId>
 		</dependency>
 	</dependencies>
 </project>

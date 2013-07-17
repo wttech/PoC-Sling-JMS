@@ -29,8 +29,9 @@ import com.cognifide.jms.session.model.SharedSession;
 
 @Component(immediate = true, metatype = false)
 @Service(value = { SharedSessionStorage.class, MessageListener.class })
-@Properties({ @Property(name = JmsConstants.CONSUMER_SUBJECT, value = SharedSessionStorage.TOPIC),
-		@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC) })
+@Properties({
+	@Property(name = JmsConstants.CONSUMER_SUBJECT, value = SharedSessionStorage.TOPIC),
+	@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC) })
 public class SharedSessionStorage implements MessageListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SharedSessionStorage.class);

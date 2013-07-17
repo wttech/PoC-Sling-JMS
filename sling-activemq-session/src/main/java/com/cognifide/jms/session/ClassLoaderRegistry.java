@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.jms.MessageListener;
-
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
@@ -18,7 +16,7 @@ import com.cognifide.jms.api.session.ClassLoaderProvider;
 @Component(immediate = true, metatype = false)
 @Service(value = ClassLoaderRegistry.class)
 public class ClassLoaderRegistry {
-	@Reference(referenceInterface = MessageListener.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+	@Reference(referenceInterface = ClassLoaderProvider.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
 	private Set<ClassLoaderProvider> providers = new HashSet<ClassLoaderProvider>();
 
 	private volatile ClassLoader loader = Thread.currentThread().getContextClassLoader();
