@@ -15,6 +15,7 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.apache.sling.commons.scheduler.impl.QuartzScheduler;
 import org.apache.sling.discovery.PropertyProvider;
 import org.apache.sling.settings.SlingSettingsService;
@@ -102,8 +103,8 @@ public class HeartBeat implements Runnable {
 	}
 
 	public void bindProviders(PropertyProvider provider, Map<String, Object> config) {
-		providers.put(provider,
-				new ProviderWithNames(provider, (String[]) config.get(PropertyProvider.PROPERTY_PROPERTIES)));
+		String[] names = PropertiesUtil.toStringArray(config.get(PropertyProvider.PROPERTY_PROPERTIES));
+		providers.put(provider, new ProviderWithNames(provider, names));
 	}
 
 	public void unbindProviders(PropertyProvider provider) {
