@@ -3,6 +3,7 @@ package com.cognifide.activemq.core.consumer;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -15,72 +16,65 @@ import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.ReferenceCardinality;
 import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.component.ComponentContext;
 
 import com.cognifide.jms.api.JmsConnectionProvider;
-import com.cognifide.jms.api.JmsConstants;
 
 @Component(immediate = true, metatype = false)
 public class MessageListenerRegistry {
 
 	@Reference
+	private SlingSettingsService settingsService;
+
+	@Reference
 	private JmsConnectionProvider connectionProvider;
 
 	@Reference(referenceInterface = MessageListener.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-	private Map<ConsumerKey, ListenerList> listeners = new HashMap<ConsumerKey, ListenerList>();
+	private Map<MessageListener, Consumer> consumers = new HashMap<MessageListener, Consumer>();
 
 	private Connection connection;
 
 	private Session session;
 
+	private Set<String> runModes;
+
 	@Activate
 	public void activate(ComponentContext ctx) throws JMSException, MalformedURLException,
 			InvalidSyntaxException {
+		runModes = settingsService.getRunModes();
 		connection = connectionProvider.getConnection();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		connection.start();
-
-		for (ListenerList list : listeners.values()) {
-			list.open(session);
+		for (Consumer c : consumers.values()) {
+			c.connect(session);
 		}
 	}
 
 	@Deactivate
 	public void deactivate() throws JMSException {
-		for (ListenerList l : listeners.values()) {
-			l.close();
+		for (Consumer c : consumers.values()) {
+			c.close();
 		}
 		session.close();
 		connection.close();
-		listeners.clear();
+		consumers.clear();
 	}
 
-	public void bindListeners(MessageListener listener, Map<String, Object> properties) throws JMSException,
+	public void bindConsumers(MessageListener listener, Map<String, Object> properties) throws JMSException,
 			InvalidSyntaxException {
-		ConsumerKey key = new ConsumerKey(properties);
-		if (!listeners.containsKey(key)) {
-			listeners.put(key, new ListenerList(key));
-		}
-		ListenerList list = listeners.get(key);
-		if (properties.get(JmsConstants.FILTER) != null) {
-			list.addFilteredListener(listener, (String) properties.get(JmsConstants.FILTER));
-		} else {
-			list.addListener(listener);
-		}
+		Consumer consumer = new Consumer(listener, runModes, properties);
+		consumers.put(listener, consumer);
 		if (session != null) {
-			list.open(session);
+			consumer.connect(session);
 		}
 	}
 
-	public void unbindListeners(MessageListener listener, Map<String, Object> properties) throws JMSException {
-		ConsumerKey key = new ConsumerKey(properties);
-		if (listeners.containsKey(key)) {
-			ListenerList list = listeners.get(key);
-			list.removeListener(listener);
-			if (list.isEmpty()) {
-				listeners.remove(key);
-			}
+	public void unbindConsumers(MessageListener listener, Map<String, Object> properties) throws JMSException {
+		Consumer consumer = consumers.get(consumers);
+		if (consumer != null) {
+			consumer.close();
 		}
 	}
 }

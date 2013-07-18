@@ -24,7 +24,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
-import com.cognifide.jms.api.JmsConstants;
+import com.cognifide.jms.api.SlingJmsProperties;
 
 public class SlingBlobStrategy implements BlobDownloadStrategy, BlobUploadStrategy {
 
@@ -52,7 +52,7 @@ public class SlingBlobStrategy implements BlobDownloadStrategy, BlobUploadStrate
 
 	@Override
 	public URL uploadFile(ActiveMQBlobMessage message, File file) throws JMSException, IOException {
-		if (!message.getBooleanProperty(JmsConstants.JCR_BLOB_MESSAGE)) {
+		if (!message.getBooleanProperty(SlingJmsProperties.JCR_BLOB_MESSAGE)) {
 			return blobUploadStrategy.uploadFile(message, file);
 		}
 		message.setStringProperty(LOGIN_PARAMETER, blobServlet.getLogin());
@@ -67,7 +67,7 @@ public class SlingBlobStrategy implements BlobDownloadStrategy, BlobUploadStrate
 
 	@Override
 	public InputStream getInputStream(ActiveMQBlobMessage message) throws IOException, JMSException {
-		if (!message.getBooleanProperty(JmsConstants.JCR_BLOB_MESSAGE)) {
+		if (!message.getBooleanProperty(SlingJmsProperties.JCR_BLOB_MESSAGE)) {
 			return blobDownloadStrategy.getInputStream(message);
 		}
 		HttpClient client = new DefaultHttpClient();

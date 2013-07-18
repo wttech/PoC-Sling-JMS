@@ -1,7 +1,6 @@
 package com.cognifide.jms.discovery.heartbeat;
 
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,15 +12,13 @@ import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferenceCardinality;
+import org.apache.felix.scr.annotations.ReferencePolicy;
 import org.apache.felix.scr.annotations.Service;
-import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.apache.sling.commons.scheduler.impl.QuartzScheduler;
 import org.apache.sling.discovery.PropertyProvider;
 import org.apache.sling.settings.SlingSettingsService;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +41,9 @@ public class HeartBeat implements Runnable {
 
 	protected static final String CLUSTER_ID_PROPERTY_DEFAULT = "default";
 
+	@Reference(referenceInterface = PropertyProvider.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+	private Map<PropertyProvider, ProviderWithNames> providers = new HashMap<PropertyProvider, ProviderWithNames>();
+
 	@Reference
 	private JmsConnectionProvider connectionProvider;
 
@@ -54,17 +54,12 @@ public class HeartBeat implements Runnable {
 
 	private String clusterId;
 
-	private BundleContext bundleContext;
-
 	private DiscoveryJmsProducer jms;
 
 	@Activate
-	protected void activate(ComponentContext context) throws JMSException {
-		this.bundleContext = context.getBundleContext();
+	protected void activate(Map<String, Object> config) throws JMSException {
 		this.slingId = slingSettingsService.getSlingId();
-		Dictionary<?, ?> config = context.getProperties();
-		this.clusterId = PropertiesUtil.toString(config.get(CLUSTER_ID_PROPERTY_NAME),
-				CLUSTER_ID_PROPERTY_DEFAULT);
+		this.clusterId = (String) config.get(CLUSTER_ID_PROPERTY_NAME);
 		jms = new DiscoveryJmsProducer(connectionProvider);
 	}
 
@@ -92,18 +87,8 @@ public class HeartBeat implements Runnable {
 
 	private Map<String, String> gatherProperties() throws InvalidSyntaxException {
 		Map<String, String> properties = new HashMap<String, String>();
-		ServiceReference[] references = bundleContext.getAllServiceReferences(
-				PropertyProvider.class.getName(), null);
-		for (ServiceReference r : references) {
-			String[] propNames = PropertiesUtil.toStringArray(r
-					.getProperty(PropertyProvider.PROPERTY_PROPERTIES));
-			if (ArrayUtils.isEmpty(propNames)) {
-				continue;
-			}
-			PropertyProvider provider = (PropertyProvider) bundleContext.getService(r);
-			for (String name : propNames) {
-				properties.put(name, provider.getProperty(name));
-			}
+		for (ProviderWithNames p : providers.values()) {
+			properties.putAll(p.getProperties());
 		}
 		return properties;
 	}
@@ -114,5 +99,35 @@ public class HeartBeat implements Runnable {
 
 	public String getLocalClusterId() {
 		return clusterId;
+	}
+
+	public void bindProviders(PropertyProvider provider, Map<String, Object> config) {
+		providers.put(provider,
+				new ProviderWithNames(provider, (String[]) config.get(PropertyProvider.PROPERTY_PROPERTIES)));
+	}
+
+	public void unbindProviders(PropertyProvider provider) {
+		providers.remove(provider);
+	}
+
+	private static final class ProviderWithNames {
+		private PropertyProvider provider;
+
+		private String[] names;
+
+		public ProviderWithNames(PropertyProvider provider, String[] names) {
+			this.provider = provider;
+			this.names = names;
+		}
+
+		public Map<String, String> getProperties() {
+			Map<String, String> map = new HashMap<String, String>();
+			if (ArrayUtils.isNotEmpty(names)) {
+				for (String name : names) {
+					map.put(name, provider.getProperty(name));
+				}
+			}
+			return map;
+		}
 	}
 }

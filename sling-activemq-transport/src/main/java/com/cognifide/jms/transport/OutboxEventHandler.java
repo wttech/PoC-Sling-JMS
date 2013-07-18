@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.jms.api.JmsConnectionProvider;
+import com.cognifide.jms.api.SlingJmsProperties;
 
 @Component(immediate = true, metatype = true)
 @Service(value = EventHandler.class)
@@ -96,7 +97,7 @@ public class OutboxEventHandler implements EventHandler {
 	public void poll() {
 		try {
 			MapMessage msg = session.createMapMessage();
-			msg.setString("runMode", runMode);
+			msg.setStringProperty(SlingJmsProperties.DESTINATION_RUN_MODE, runMode);
 			msg.setString("agentId", agentId);
 			producer.send(msg);
 		} catch (JMSException e) {

@@ -1,7 +1,6 @@
 package com.cognifide.jms.transport;
 
 import java.lang.reflect.Method;
-import java.util.Set;
 
 import javax.jcr.Session;
 import javax.jms.JMSException;
@@ -51,11 +50,8 @@ public class ReplicationAgentInvoker implements MessageListener {
 
 	private Object reverseReplicationHandler;
 
-	private Set<String> runModes;
-
 	@Activate
 	public void activate(ComponentContext context) {
-		runModes = slingSettings.getRunModes();
 		BundleContext bundleCtx = context.getBundleContext();
 		ServiceReference reference = bundleCtx
 				.getServiceReference("com.day.cq.replication.impl.ReverseReplicationHandler");
@@ -66,11 +62,7 @@ public class ReplicationAgentInvoker implements MessageListener {
 	public void onMessage(Message message) {
 		try {
 			MapMessage map = (MapMessage) message;
-			String runMode = map.getString("runMode");
 			String agentId = map.getString("agentId");
-			if (!runModes.contains(runMode)) {
-				return;
-			}
 			poll(agentId);
 		} catch (JMSException e) {
 			LOG.error("Can't read message", e);
