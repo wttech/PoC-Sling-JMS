@@ -56,6 +56,30 @@ will match following message:
 
     Message msg = session.createMessage();
     msg.setStringProperty("action", "REFRESH_TOPOLOGY");
+    
+## sling-activemq-scr
+
+Above SCR annotations can be replaced with custom `@SlingMessageConsumer`:
+
+	@SlingMessageConsumer(destinationType = DestinationType.TOPIC, subject = "sharedSessionTopic")
+
+It'll automatically create `@Component`, `@Service` and all necessary `@Properties`. All you need to do is to add following dependency to your `pom.xml`:
+
+
+	<project>
+		<build>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-scr-plugin</artifactId>
+				<version>1.13.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.cognifide.activemq</groupId>
+						<artifactId>sling-activemq-scr</artifactId>
+						<version>0.1.0-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 
 ## sling-activemq-discovery
 
