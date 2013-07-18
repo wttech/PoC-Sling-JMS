@@ -1,7 +1,7 @@
-package com.cognifide.jms.api;
+package com.cognifide.jms.api.consumer;
 
-public class JmsConstants {
-	public static final String CONSUMER_TYPE = "consumerType";
+public class MessageConsumerProperties {
+	public static final String DESTINATION_TYPE = "destinationType";
 
 	public static final String CONSUMER_SUBJECT = "subject";
 

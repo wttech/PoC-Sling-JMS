@@ -14,24 +14,17 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
-import org.apache.felix.scr.annotations.Properties;
-import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.jms.api.JmsConstants;
+import com.cognifide.jms.api.consumer.DestinationType;
+import com.cognifide.jms.api.consumer.SlingMessageConsumer;
 import com.cognifide.jms.session.model.SessionDiff;
 import com.cognifide.jms.session.model.SharedSession;
 
-@Component(immediate = true, metatype = false)
-@Service(value = { SharedSessionStorage.class, MessageListener.class })
-@Properties({
-	@Property(name = JmsConstants.CONSUMER_SUBJECT, value = SharedSessionStorage.TOPIC),
-	@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC) })
+@SlingMessageConsumer(destinationType = DestinationType.TOPIC, subject = SharedSessionStorage.TOPIC)
 public class SharedSessionStorage implements MessageListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SharedSessionStorage.class);

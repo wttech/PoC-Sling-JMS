@@ -19,8 +19,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.jms.api.JmsConstants;
 import com.cognifide.jms.api.SlingJmsProperties;
+import com.cognifide.jms.api.consumer.DestinationType;
+import com.cognifide.jms.api.consumer.MessageConsumerProperties;
 
 public class Consumer implements MessageListener {
 
@@ -41,8 +42,8 @@ public class Consumer implements MessageListener {
 		this.properties = properties;
 		this.listener = listener;
 		this.runModes = runModes;
-		if (properties.containsKey(JmsConstants.FILTER)) {
-			this.filter = FrameworkUtil.createFilter((String) properties.get(JmsConstants.FILTER));
+		if (properties.containsKey(MessageConsumerProperties.FILTER)) {
+			this.filter = FrameworkUtil.createFilter((String) properties.get(MessageConsumerProperties.FILTER));
 		} else {
 			this.filter = null;
 		}
@@ -53,12 +54,12 @@ public class Consumer implements MessageListener {
 			return;
 		}
 
-		ConsumerType type = ConsumerType.valueOf((String) properties.get(JmsConstants.CONSUMER_TYPE));
-		String name = (String) properties.get(JmsConstants.CONSUMER_SUBJECT);
+		DestinationType type = DestinationType.valueOf((String) properties.get(MessageConsumerProperties.DESTINATION_TYPE));
+		String name = (String) properties.get(MessageConsumerProperties.CONSUMER_SUBJECT);
 		Destination dest;
-		if (type == ConsumerType.QUEUE) {
+		if (type == DestinationType.QUEUE) {
 			dest = session.createQueue(name);
-		} else if (type == ConsumerType.TOPIC) {
+		} else if (type == DestinationType.TOPIC) {
 			dest = session.createTopic(name);
 		} else {
 			throw new IllegalArgumentException("Not supported consumer type: " + type);

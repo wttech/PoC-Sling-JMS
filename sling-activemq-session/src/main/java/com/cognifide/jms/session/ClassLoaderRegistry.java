@@ -25,12 +25,12 @@ public class ClassLoaderRegistry {
 		return loader;
 	}
 
-	public void bindProviders(ClassLoaderProvider provider) {
+	protected void bindProviders(ClassLoaderProvider provider) {
 		providers.add(provider);
 		loader = createClassLoader(providers);
 	}
 
-	public void unbindProviders(ClassLoaderProvider provider) {
+	protected void unbindProviders(ClassLoaderProvider provider) {
 		providers.remove(provider);
 		loader = createClassLoader(providers);
 	}

@@ -61,22 +61,15 @@
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-scr-plugin</artifactId>
-					<version>1.7.2</version>
+					<version>1.13.0</version>
 					<executions>
 						<execution>
-							<id>generate-scr-scrdescriptor</id>
 							<goals>
 								<goal>scr</goal>
 							</goals>
+							<phase>process-classes</phase>
 						</execution>
 					</executions>
-					<dependencies>
-						<dependency>
-							<groupId>org.slf4j</groupId>
-							<artifactId>slf4j-simple</artifactId>
-							<version>1.6.1</version>
-						</dependency>
-					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.sling</groupId>
@@ -131,7 +124,7 @@
 			<dependency>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.scr.annotations</artifactId>
-				<version>1.6.0</version>
+				<version>1.9.4</version>
 				<scope>provided</scope>
 			</dependency>
 
@@ -225,7 +218,7 @@
 				<artifactId>geronimo-jms_1.1_spec</artifactId>
 				<version>1.1.1</version>
 			</dependency>
-			
+
 			<!-- javax -->
 			<dependency>
 				<groupId>javax.jcr</groupId>
@@ -247,7 +240,7 @@
 				<scope>provided</scope>
 				<version>5.7.0</version>
 			</dependency>
-			
+
 			<!-- logging -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -260,6 +253,7 @@
 
 	<modules>
 		<module>sling-activemq-api</module>
+		<module>sling-activemq-scr</module>
 		<module>sling-activemq-core</module>
 		<module>sling-activemq-discovery</module>
 		<module>sling-activemq-sandbox</module>

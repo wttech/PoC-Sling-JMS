@@ -24,7 +24,7 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.jms.api.JmsConstants;
+import com.cognifide.jms.api.consumer.MessageConsumerProperties;
 import com.day.cq.replication.Agent;
 import com.day.cq.replication.AgentManager;
 import com.day.cq.replication.ReplicationAction;
@@ -33,8 +33,8 @@ import com.day.cq.replication.ReplicationException;
 
 @Component(immediate = true, metatype = false)
 @Service
-@Properties({ @Property(name = JmsConstants.CONSUMER_SUBJECT, value = OutboxEventHandler.TOPIC),
-		@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC) })
+@Properties({ @Property(name = MessageConsumerProperties.CONSUMER_SUBJECT, value = OutboxEventHandler.TOPIC),
+		@Property(name = MessageConsumerProperties.DESTINATION_TYPE, value = MessageConsumerProperties.TYPE_TOPIC) })
 public class ReplicationAgentInvoker implements MessageListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ReplicationAgentInvoker.class);

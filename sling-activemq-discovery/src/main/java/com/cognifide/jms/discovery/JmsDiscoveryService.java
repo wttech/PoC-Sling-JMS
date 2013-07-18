@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cognifide.jms.api.JmsConnectionProvider;
-import com.cognifide.jms.api.JmsConstants;
 import com.cognifide.jms.api.ObjectMessageUtils;
+import com.cognifide.jms.api.consumer.MessageConsumerProperties;
 import com.cognifide.jms.discovery.election.ElectionManager;
 import com.cognifide.jms.discovery.election.ElectionRequest;
 import com.cognifide.jms.discovery.heartbeat.HeartBeat;
@@ -40,8 +40,8 @@ import com.cognifide.jms.discovery.update.UpdatesManager;
 @Component(immediate = true, metatype = true)
 @Service(value = { MessageListener.class, DiscoveryService.class })
 @Properties({
-		@Property(name = JmsConstants.CONSUMER_SUBJECT, value = DiscoveryJmsProducer.TOPIC, propertyPrivate = true),
-		@Property(name = JmsConstants.CONSUMER_TYPE, value = JmsConstants.TYPE_TOPIC, propertyPrivate = true),
+		@Property(name = MessageConsumerProperties.CONSUMER_SUBJECT, value = DiscoveryJmsProducer.TOPIC, propertyPrivate = true),
+		@Property(name = MessageConsumerProperties.DESTINATION_TYPE, value = MessageConsumerProperties.TYPE_TOPIC, propertyPrivate = true),
 		@Property(name = JmsDiscoveryService.TTL_PROPERTY_NAME, intValue = JmsDiscoveryService.TTL_DEFAULT) })
 public class JmsDiscoveryService implements MessageListener, DiscoveryService {
 
