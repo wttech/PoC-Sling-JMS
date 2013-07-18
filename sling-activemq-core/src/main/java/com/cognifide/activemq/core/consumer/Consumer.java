@@ -13,6 +13,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -42,8 +43,10 @@ public class Consumer implements MessageListener {
 		this.properties = properties;
 		this.listener = listener;
 		this.runModes = runModes;
-		if (properties.containsKey(MessageConsumerProperties.FILTER)) {
-			this.filter = FrameworkUtil.createFilter((String) properties.get(MessageConsumerProperties.FILTER));
+		String filter = (String) properties.get(MessageConsumerProperties.FILTER);
+		if (StringUtils.isNotBlank(filter)) {
+			this.filter = FrameworkUtil.createFilter((String) properties
+					.get(MessageConsumerProperties.FILTER));
 		} else {
 			this.filter = null;
 		}
@@ -54,7 +57,8 @@ public class Consumer implements MessageListener {
 			return;
 		}
 
-		DestinationType type = DestinationType.valueOf((String) properties.get(MessageConsumerProperties.DESTINATION_TYPE));
+		DestinationType type = DestinationType.valueOf((String) properties
+				.get(MessageConsumerProperties.DESTINATION_TYPE));
 		String name = (String) properties.get(MessageConsumerProperties.CONSUMER_SUBJECT);
 		Destination dest;
 		if (type == DestinationType.QUEUE) {
