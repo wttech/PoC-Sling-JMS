@@ -1,6 +1,7 @@
 package com.cognifide.jms.session;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.jms.Connection;
@@ -18,12 +19,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingFilter;
 import org.apache.felix.scr.annotations.sling.SlingFilterScope;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.commons.osgi.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +37,14 @@ import com.cognifide.jms.session.model.SessionDiff;
 import com.cognifide.jms.session.model.SharedSession;
 import com.cognifide.jms.session.model.SharedSessionCookie;
 
-@SlingFilter(order = Integer.MIN_VALUE, scope = { SlingFilterScope.REQUEST })
+@Component(immediate = true, metatype = true)
+@SlingFilter(order = Integer.MIN_VALUE, scope = { SlingFilterScope.REQUEST }, generateComponent = false)
+@Properties({ @Property(name = SharedSessionFilter.ATTRIBUTE_PATTERN_PROPERTY, value = { ".*" }) })
 public class SharedSessionFilter implements Filter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SharedSessionFilter.class);
+
+	protected static final String ATTRIBUTE_PATTERN_PROPERTY = "attributePattern";
 
 	@Reference
 	private SharedSessionStorage storage;
@@ -51,9 +60,12 @@ public class SharedSessionFilter implements Filter {
 
 	private MessageProducer producer;
 
+	private String[] attributePatterns;
+
 	@Activate
-	protected void activate() throws JMSException {
+	protected void activate(Map<String, Object> configuration) throws JMSException {
 		this.instanceId = UUID.randomUUID().toString();
+		this.attributePatterns = PropertiesUtil.toStringArray(configuration.get(ATTRIBUTE_PATTERN_PROPERTY));
 
 		connection = connectionProvider.getConnection();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -101,7 +113,7 @@ public class SharedSessionFilter implements Filter {
 		SharedSession sharedSession = storage.getSharedSession(cookie.getSharedSessionId());
 		if (!instanceId.equals(cookie.getInstanceId())) {
 			LOG.info("Host in shared session cookie doesn't match, updating local session");
-			sharedSession.copyTo(slingRequest.getSession());
+			sharedSession.copyTo(slingRequest.getSession(), attributePatterns);
 			cookie.set(instanceId, cookie.getSharedSessionId());
 		}
 

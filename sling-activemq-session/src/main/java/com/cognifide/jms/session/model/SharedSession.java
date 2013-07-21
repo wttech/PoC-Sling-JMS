@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import javax.jms.JMSException;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class SharedSession {
 	private final Map<String, Object> attributes;
 
@@ -38,12 +40,21 @@ public class SharedSession {
 		return Collections.unmodifiableMap(attributes);
 	}
 
-	public void copyTo(HttpSession session) {
+	public void copyTo(HttpSession session, String[] attributePatterns) {
 		for (Entry<String, Object> entry : attributes.entrySet()) {
-			if (session.getAttribute(entry.getKey()) == null) {
+			if (matchesAnyRegex(entry.getKey(), attributePatterns))
 				session.setAttribute(entry.getKey(), entry.getValue());
-			}
 		}
+	}
+
+	private boolean matchesAnyRegex(String subject, String[] regexes) {
+		if (ArrayUtils.isEmpty(regexes)) {
+			return true;
+		}
+		for (String regex : regexes) {
+			return subject.matches(regex);
+		}
+		return false;
 	}
 
 	public void refreshSession() {
