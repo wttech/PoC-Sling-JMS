@@ -42,4 +42,5 @@ public class ActiveMQConnectionProvider implements JmsConnectionProvider {
 	public ActiveMQConnection getConnection() throws JMSException {
 		return (ActiveMQConnection) connectionFactory.createConnection();
 	}
+
 }

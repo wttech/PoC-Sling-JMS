@@ -1,11 +1,11 @@
 package com.cognifide.jms.sandbox;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 
+import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -14,8 +14,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.servlet.ServletException;
 
-import org.apache.activemq.ActiveMQConnection;
-import org.apache.activemq.ActiveMQSession;
 import org.apache.activemq.BlobMessage;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
@@ -28,8 +26,8 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cognifide.jms.api.BlobMessageProvider;
 import com.cognifide.jms.api.JmsConnectionProvider;
-import com.cognifide.jms.api.SlingJmsProperties;
 
 @Component(immediate = true, metatype = false)
 @SlingServlet(paths = "/bin/cognifide/blob", extensions = "txt", generateService = true, generateComponent = false)
@@ -42,9 +40,12 @@ public class TransferBlob extends SlingSafeMethodsServlet {
 	@Reference
 	private JmsConnectionProvider connectionProvider;
 
-	private ActiveMQConnection connection;
+	@Reference
+	private BlobMessageProvider blobMessageProvider;
 
-	private ActiveMQSession session;
+	private Connection connection;
+
+	private Session session;
 
 	private MessageConsumer consumer;
 
@@ -53,8 +54,8 @@ public class TransferBlob extends SlingSafeMethodsServlet {
 	@Activate
 	public void activate() throws JMSException, MalformedURLException {
 		LOG.info("Creating JMS connection");
-		connection = (ActiveMQConnection) connectionProvider.getConnection();
-		session = (ActiveMQSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		connection = connectionProvider.getConnection();
+		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		Destination dest = session.createTopic("blob_test");
 		consumer = session.createConsumer(dest);
 		producer = session.createProducer(dest);
@@ -85,14 +86,16 @@ public class TransferBlob extends SlingSafeMethodsServlet {
 	}
 
 	private void send() throws JMSException, MalformedURLException {
-		String propertyPath = "/apps/geometrixx/components/asseteditor/asseteditor.jsp/jcr:content/jcr:data";
-		BlobMessage msg = session.createBlobMessage(new File(propertyPath));
-		msg.setBooleanProperty(SlingJmsProperties.JCR_BLOB_MESSAGE, true);
+		Message msg = blobMessageProvider.createBlobMessage(session,
+				"/content/dam/geometrixx/offices/basel roof.jpg/jcr:content/renditions/original/jcr:content", "jcr:data");
 		producer.send(msg);
 	}
 
 	private void recv(SlingHttpServletResponse response) throws JMSException, IOException {
 		Message msg = consumer.receive(1000 * 15);
+		if (msg == null) {
+			return;
+		}
 		BlobMessage blob = (BlobMessage) msg;
 		OutputStream os = response.getOutputStream();
 		InputStream is = blob.getInputStream();

@@ -35,6 +35,7 @@ public class ActiveMQEmbeddedBroker {
 		if (enabled) {
 			BrokerService broker = BrokerFactory.createBroker(uri);
 			broker.start();
+			broker.waitUntilStarted();
 		}
 	}
 
@@ -42,6 +43,7 @@ public class ActiveMQEmbeddedBroker {
 	protected void deactivate() throws Exception {
 		if (broker != null) {
 			broker.stop();
+			broker.waitUntilStopped();
 		}
 	}
 }

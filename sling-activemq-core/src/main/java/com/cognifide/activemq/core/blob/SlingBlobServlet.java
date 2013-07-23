@@ -1,9 +1,9 @@
 package com.cognifide.activemq.core.blob;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -11,9 +11,12 @@ import java.util.UUID;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.servlet.Servlet;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.activemq.ActiveMQSession;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Activate;
@@ -30,17 +33,24 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.commons.osgi.PropertiesUtil;
-import org.osgi.service.component.ComponentContext;
+
+import com.cognifide.jms.api.BlobMessageProvider;
 
 @Component(immediate = true, metatype = true)
-@Service(value = { SlingBlobServlet.class, Servlet.class })
+@Service(value = { SlingBlobServlet.class, Servlet.class, BlobMessageProvider.class })
 @Properties({
 		@Property(name = "sling.servlet.paths", value = "/bin/jms/blob", propertyPrivate = true),
 		@Property(name = "sling.servlet.extensions", value = "bin", propertyPrivate = true),
 		@Property(name = SlingBlobServlet.EXTERNAL_URL_NAME, value = SlingBlobServlet.EXTERNAL_URL_DEFAULT),
 		@Property(name = SlingBlobServlet.EXTERNAL_LOGIN_NAME, value = SlingBlobServlet.EXTERNAL_LOGIN_DEFAULT),
-		@Property(name = SlingBlobServlet.EXTERNAL_PASSWORD_NAME, value = SlingBlobServlet.EXTERNAL_PASSWORD_DEFAULT)})
-public class SlingBlobServlet extends SlingAllMethodsServlet {
+		@Property(name = SlingBlobServlet.EXTERNAL_PASSWORD_NAME, value = SlingBlobServlet.EXTERNAL_PASSWORD_DEFAULT) })
+public class SlingBlobServlet extends SlingAllMethodsServlet implements BlobMessageProvider {
+
+	public static final String LOGIN_PARAMETER = SlingBlobServlet.class.getName() + ".login";
+
+	public static final String PASSWORD_PARAMETER = SlingBlobServlet.class.getName() + ".password";
+
+	public static final String JCR_BLOB_MESSAGE = SlingBlobServlet.class.getName() + ".jcrBlob";
 
 	private static final long serialVersionUID = -8867615561279547594L;
 
@@ -70,8 +80,7 @@ public class SlingBlobServlet extends SlingAllMethodsServlet {
 	private ResourceResolverFactory resolverFactory;
 
 	@Activate
-	protected void activate(ComponentContext ctx) throws LoginException {
-		Dictionary<?, ?> config = ctx.getProperties();
+	protected void activate(Map<String, Object> config) throws LoginException {
 		externalUrl = PropertiesUtil.toString(config.get(EXTERNAL_URL_NAME), EXTERNAL_URL_DEFAULT);
 		login = PropertiesUtil.toString(config.get(EXTERNAL_LOGIN_NAME), EXTERNAL_LOGIN_DEFAULT);
 		password = PropertiesUtil.toString(config.get(EXTERNAL_PASSWORD_NAME), EXTERNAL_PASSWORD_DEFAULT);
@@ -121,12 +130,13 @@ public class SlingBlobServlet extends SlingAllMethodsServlet {
 		return externalUrl + "/" + uuid;
 	}
 
-	public String getLogin() {
-		return login;
-	}
-
-	public String getPassword() {
-		return password;
+	public Message createBlobMessage(javax.jms.Session session, String nodePath, String property)
+			throws JMSException {
+		Message msg = ((ActiveMQSession) session).createBlobMessage(new File(nodePath + "/" + property));
+		msg.setBooleanProperty(SlingBlobServlet.JCR_BLOB_MESSAGE, true);
+		msg.setStringProperty(SlingBlobServlet.LOGIN_PARAMETER, login);
+		msg.setStringProperty(SlingBlobServlet.PASSWORD_PARAMETER, password);
+		return msg;
 	}
 
 	private javax.jcr.Property getProperty(String path) throws IOException {
