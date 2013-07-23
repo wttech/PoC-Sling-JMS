@@ -145,7 +145,7 @@ public class JmsDiscoveryService implements MessageListener, DiscoveryService {
 		}
 		TopologyView oldView = view;
 		view = updateMessageStorage.generateView();
-		if (!electionManager.electIfNecessary(view)) {
+		if (!electionManager.electIfNecessary(view) && view.getLocalInstance() != null) {
 			eventManager.post(Type.TOPOLOGY_CHANGED, oldView, view);
 			sentChanging = false;
 			if (refreshType == RefreshType.REFRESH_PROPERTIES) {
