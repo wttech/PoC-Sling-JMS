@@ -4,15 +4,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>sling-activemq-discovery</artifactId>
+	<artifactId>sling-jms-session</artifactId>
 	<packaging>bundle</packaging>
 	<parent>
-		<groupId>com.cognifide.activemq</groupId>
-		<artifactId>sling-activemq-parent</artifactId>
+		<groupId>com.cognifide.cq.jms</groupId>
+		<artifactId>sling-jms-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<name>Sling ActiveMQ discovery</name>
+	<name>Sling JMS shared session</name>
 
 	<build>
 		<plugins>
@@ -22,6 +22,13 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-scr-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>com.cognifide.cq.jms</groupId>
+						<artifactId>sling-jms-scr</artifactId>
+						<version>0.1.0-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.sling</groupId>
@@ -37,7 +44,6 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-						<Export-Package>com.cognifide.jms.discovery.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -46,8 +52,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.cognifide.activemq</groupId>
-			<artifactId>sling-activemq-api</artifactId>
+			<groupId>com.cognifide.cq.jms</groupId>
+			<artifactId>sling-jms-api</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 
@@ -57,36 +63,14 @@
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
 
-		<!-- felix -->
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.foundation</artifactId>
-		</dependency>
-
 		<!-- sling -->
 		<dependency>
 			<groupId>org.apache.sling</groupId>
 			<artifactId>org.apache.sling.api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.discovery.api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.settings</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.commons.scheduler</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.sling</groupId>

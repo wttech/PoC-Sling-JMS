@@ -4,15 +4,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>sling-activemq-core</artifactId>
+	<artifactId>cq-jms-replication</artifactId>
 	<packaging>bundle</packaging>
 	<parent>
-		<groupId>com.cognifide.activemq</groupId>
-		<artifactId>sling-activemq-parent</artifactId>
+		<groupId>com.cognifide.cq.jms</groupId>
+		<artifactId>sling-jms-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<name>Sling ActiveMQ core</name>
+	<name>CQ JMS replication</name>
 
 	<build>
 		<plugins>
@@ -37,8 +37,8 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-						<Export-Package>com.cognifide.jms.sandbox.*</Export-Package>
-						<Embed-Dependency>commons-io,httpclient,httpcore,commons-codec</Embed-Dependency>
+						<Import-Package>!com.day.cq.replication.impl.*,*</Import-Package>
+						<Export-Package>com.cognifide.jms.transport.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -47,8 +47,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.cognifide.activemq</groupId>
-			<artifactId>sling-activemq-api</artifactId>
+			<groupId>com.cognifide.cq.jms</groupId>
+			<artifactId>sling-jms-api</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 
@@ -65,11 +65,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.foundation</artifactId>
+			<artifactId>org.osgi.core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
-			<artifactId>javax.servlet</artifactId>
+			<artifactId>org.osgi.foundation</artifactId>
 		</dependency>
 
 		<!-- sling -->
@@ -79,49 +79,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.commons.osgi</artifactId>
+			<artifactId>org.apache.sling.settings</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.sling</groupId>
-			<artifactId>org.apache.sling.settings</artifactId>
+			<artifactId>org.apache.sling.event</artifactId>
 		</dependency>
 
-		<!-- jcr -->
+		<!-- cq -->
 		<dependency>
-			<groupId>javax.jcr</groupId>
-			<artifactId>jcr</artifactId>
-		</dependency>
-
-		<!-- commons -->
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.3.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.2.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>4.2.3</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>1.8</version>
-		</dependency>
-
-		<!-- activemq -->
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-core</artifactId>
+			<groupId>com.adobe.granite</groupId>
+			<artifactId>com.adobe.granite.replication.core</artifactId>
+			<version>5.12.2</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- jms -->
@@ -130,5 +100,16 @@
 			<artifactId>geronimo-jms_1.1_spec</artifactId>
 		</dependency>
 
+		<!-- logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<!-- jcr -->
+		<dependency>
+			<groupId>javax.jcr</groupId>
+			<artifactId>jcr</artifactId>
+		</dependency>
 	</dependencies>
 </project>

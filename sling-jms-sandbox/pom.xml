@@ -4,15 +4,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>sling-activemq-api</artifactId>
+	<artifactId>sling-jms-sandbox</artifactId>
 	<packaging>bundle</packaging>
 	<parent>
-		<groupId>com.cognifide.activemq</groupId>
-		<artifactId>sling-activemq-parent</artifactId>
+		<groupId>com.cognifide.cq.jms</groupId>
+		<artifactId>sling-jms-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<name>Sling ActiveMQ API</name>
+	<name>Sling JMS sandbox</name>
 
 	<build>
 		<plugins>
@@ -37,7 +37,7 @@
 						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-						<Export-Package>com.cognifide.jms.api.*</Export-Package>
+						<Export-Package>com.cognifide.jms.sandbox.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -45,16 +45,58 @@
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.cognifide.cq.jms</groupId>
+			<artifactId>sling-jms-api</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+		</dependency>
+
 		<!-- scr -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.scr.annotations</artifactId>
 		</dependency>
 
+		<!-- sling -->
+		<dependency>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.discovery.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.sling</groupId>
+			<artifactId>org.apache.sling.settings</artifactId>
+		</dependency>
+
+		<!-- commons -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+
 		<!-- jms -->
 		<dependency>
 			<groupId>org.apache.geronimo.specs</groupId>
 			<artifactId>geronimo-jms_1.1_spec</artifactId>
+		</dependency>
+
+		<!-- activemq -->
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-core</artifactId>
+		</dependency>
+
+		<!-- logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 	</dependencies>
 </project>

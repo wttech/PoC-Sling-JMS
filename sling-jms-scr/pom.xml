@@ -4,15 +4,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>sling-activemq-scr</artifactId>
+	<artifactId>sling-jms-scr</artifactId>
 	<packaging>jar</packaging>
 	<parent>
-		<groupId>com.cognifide.activemq</groupId>
-		<artifactId>sling-activemq-parent</artifactId>
+		<groupId>com.cognifide.cq.jms</groupId>
+		<artifactId>sling-jms-parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<name>Sling ActiveMQ SCR plugin</name>
+	<name>Sling JMS SCR plugin</name>
 
 	<build>
 		<plugins>
@@ -35,8 +35,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.cognifide.activemq</groupId>
-			<artifactId>sling-activemq-api</artifactId>
+			<groupId>com.cognifide.cq.jms</groupId>
+			<artifactId>sling-jms-api</artifactId>
 			<version>0.1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>

@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.cognifide.activemq</groupId>
-	<artifactId>sling-activemq-parent</artifactId>
+	<groupId>com.cognifide.cq.jms</groupId>
+	<artifactId>sling-jms-parent</artifactId>
 	<inceptionYear>2013</inceptionYear>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Sling ActiveMQ parent</name>
+	<name>Sling JMS parent</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -252,13 +252,13 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>sling-activemq-api</module>
-		<module>sling-activemq-scr</module>
-		<module>sling-activemq-core</module>
-		<module>sling-activemq-discovery</module>
-		<module>sling-activemq-sandbox</module>
-		<module>sling-activemq-session</module>
-		<module>sling-activemq-osgi</module>
-		<module>sling-activemq-transport</module>
+		<module>sling-jms-api</module>
+		<module>sling-jms-scr</module>
+		<module>sling-jms-impl-activemq</module>
+		<module>sling-jms-discovery</module>
+		<module>sling-jms-sandbox</module>
+		<module>sling-jms-session</module>
+		<module>sling-jms-activemq</module>
+		<module>cq-jms-replication</module>
 	</modules>
 </project>
