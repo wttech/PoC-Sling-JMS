@@ -38,7 +38,7 @@
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
 						<Import-Package>!com.day.cq.replication.impl.*,*</Import-Package>
-						<Export-Package>com.cognifide.jms.transport.*</Export-Package>
+						<Export-Package>com.cognifide.jms.replication.*</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
