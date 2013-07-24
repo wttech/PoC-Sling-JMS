@@ -17,6 +17,7 @@ import javax.servlet.Servlet;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.activemq.ActiveMQSession;
+import org.apache.activemq.BlobMessage;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Activate;
@@ -111,6 +112,7 @@ public class SlingBlobServlet extends SlingAllMethodsServlet implements BlobMess
 		}
 	}
 
+	@Override
 	public void doDelete(SlingHttpServletRequest request, SlingHttpServletResponse response)
 			throws IOException {
 		String uuid = request.getRequestPathInfo().getSuffix().substring(1);
@@ -118,6 +120,22 @@ public class SlingBlobServlet extends SlingAllMethodsServlet implements BlobMess
 		if (path == null) {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
+	}
+
+	@Override
+	public Message createBlobMessage(javax.jms.Session session, String nodePath, String property)
+			throws JMSException {
+		Message msg = ((ActiveMQSession) session).createBlobMessage(new File(nodePath + "/" + property));
+		msg.setBooleanProperty(SlingBlobServlet.JCR_BLOB_MESSAGE, true);
+		msg.setStringProperty(SlingBlobServlet.LOGIN_PARAMETER, login);
+		msg.setStringProperty(SlingBlobServlet.PASSWORD_PARAMETER, password);
+		return msg;
+	}
+
+	@Override
+	public InputStream getInputStream(Message msg) throws JMSException, IOException {
+		BlobMessage blobMsg = (BlobMessage) msg;
+		return blobMsg.getInputStream();
 	}
 
 	public String addMapping(String path) throws IOException {
@@ -128,15 +146,6 @@ public class SlingBlobServlet extends SlingAllMethodsServlet implements BlobMess
 		} while (mappings.containsKey(uuid));
 		mappings.put(uuid, path);
 		return externalUrl + "/" + uuid;
-	}
-
-	public Message createBlobMessage(javax.jms.Session session, String nodePath, String property)
-			throws JMSException {
-		Message msg = ((ActiveMQSession) session).createBlobMessage(new File(nodePath + "/" + property));
-		msg.setBooleanProperty(SlingBlobServlet.JCR_BLOB_MESSAGE, true);
-		msg.setStringProperty(SlingBlobServlet.LOGIN_PARAMETER, login);
-		msg.setStringProperty(SlingBlobServlet.PASSWORD_PARAMETER, password);
-		return msg;
 	}
 
 	private javax.jcr.Property getProperty(String path) throws IOException {

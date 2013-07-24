@@ -9,6 +9,7 @@ import javax.jms.JMSException;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -64,6 +65,7 @@ public class HeartBeat implements Runnable {
 		jms = new DiscoveryJmsProducer(connectionProvider);
 	}
 
+	@Deactivate
 	protected void deactivate() throws JMSException {
 		jms.close();
 	}
