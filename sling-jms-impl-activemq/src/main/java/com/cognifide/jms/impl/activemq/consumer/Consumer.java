@@ -20,7 +20,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cognifide.jms.api.SlingJmsProperties;
 import com.cognifide.jms.api.consumer.DestinationType;
 import com.cognifide.jms.api.consumer.MessageConsumerProperties;
 
@@ -92,8 +91,9 @@ public class Consumer implements MessageListener {
 
 	private boolean instanceMatch(Message message) {
 		try {
-			if (message.propertyExists(SlingJmsProperties.DESTINATION_RUN_MODE)) {
-				String destRunMode = message.getStringProperty(SlingJmsProperties.DESTINATION_RUN_MODE);
+			if (message.propertyExists(MessageConsumerProperties.DESTINATION_RUN_MODE)) {
+				String destRunMode = message
+						.getStringProperty(MessageConsumerProperties.DESTINATION_RUN_MODE);
 				return runModes.contains(destRunMode);
 			} else {
 				return true;

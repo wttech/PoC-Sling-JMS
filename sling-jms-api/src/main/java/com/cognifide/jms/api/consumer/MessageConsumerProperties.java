@@ -10,4 +10,6 @@ public class MessageConsumerProperties {
 	public static final String TYPE_QUEUE = "QUEUE";
 
 	public static final String FILTER = "filter";
+
+	public static final String DESTINATION_RUN_MODE = "com.cognifide.jms.destRunMode";
 }
