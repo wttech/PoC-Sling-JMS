@@ -17,6 +17,7 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class SharedSessionStorage implements MessageListener {
 	private ScheduledExecutorService executor;
 
 	@Reference
-	private ClassLoaderRegistry clRegistry;
+	private DynamicClassLoaderManager classLoaderManager;
 
 	@Activate
 	public void activate() throws JMSException, MalformedURLException {
@@ -104,7 +105,7 @@ public class SharedSessionStorage implements MessageListener {
 		Thread currentThread = Thread.currentThread();
 		ClassLoader cl = currentThread.getContextClassLoader();
 		try {
-			currentThread.setContextClassLoader(clRegistry.getClassLoader());
+			currentThread.setContextClassLoader(classLoaderManager.getDynamicClassLoader());
 			return (SessionDiff) msg.getObject();
 		} finally {
 			currentThread.setContextClassLoader(cl);
