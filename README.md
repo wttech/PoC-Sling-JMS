@@ -155,7 +155,7 @@ Besides the ordinary `JSESSIONID` each user gets custom `JSESSIONID_SHARED` cook
 
 When `SharedSessionFilter` notices that `INSTANCE_ID` from the cookie isn't the current instance id (eg. instance has been changed by the loadbalancer), content of the `SharedSession` is copied back to the `HttpSession`.
 
-Please notice that all objects put into the `HttpSession` has to implement `Serializable` interface as they are transfered between instances. What's more, if used class are not available in the global OSGi class loader (eg. classes from your custom bundle), ActiveMQ consumer won't be able to deserialize them properly. In order to avoid `ClassNotFoundException` you can implement OSGi interface `com.cognifide.jms.api.session.ClassLoaderProvider`. `SharedSessionStorage` will try to deserialize object messages using each class loader provided by these services. 
+Please notice that all objects put into the `HttpSession` has to implement `Serializable` interface as they are transfered between instances. Classes should be also exported from bundles, so `sling-jms-session` can access them.
 
 ## cq-jms-replication
 
