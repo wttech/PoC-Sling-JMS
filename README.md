@@ -1,6 +1,10 @@
 # Sling JMS
 
-Sling JMS is a set of bundles for integrating JMS message queue with Sling web framework. It consists of `sling-jms-api` bundle, default implementation based on `ActiveMQ` and sample applications.
+Sling JMS is a set of bundles integrating JMS message queue with Sling web framework. It consists of `sling-jms-api` bundle, default implementation based on `ActiveMQ` and sample applications.
+
+**Disclaimer**
+
+Please notice that code shared here is only PoC created for [adaptTo() 2013](http://www.adaptto.org/) conference and shouldn't be treated as production-ready software.
 
 ## sling-jms-api
 
@@ -179,17 +183,17 @@ Waiting for the message:
 Sending message (in other terminal window):
 
 	curl localhost:4504/bin/cognifide/blob.txt/send
-    
+
 #### Session
 
 Display current session:
 
 	curl localhost:4503/bin/cognifide/session.txt
-	
+
 Add random value to the current session
 
-	curl localhost:4504/bin/cognifide/session/add.txt
-	
+	curl localhost:4503/bin/cognifide/session.txt/add
+
 #### Discovery
 
 Display current topology:
