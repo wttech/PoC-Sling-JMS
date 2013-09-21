@@ -11,6 +11,7 @@
   * [implementation](https://github.com/Cognifide/PoC-Sling-JMS/blob/master/sling-jms-impl-activemq/src/main/java/com/cognifide/jms/impl/activemq/ActiveMQConnectionProvider.java)
   * [sample usage](https://github.com/Cognifide/PoC-Sling-JMS/blob/master/sling-jms-session/src/main/java/com/cognifide/jms/session/SharedSessionFilter.java#L70)
 * Discovery API
+  * [documentation](http://sling.apache.org/documentation/bundles/discovery-api-and-impl.html)
   * [election logic](https://github.com/Cognifide/PoC-Sling-JMS/blob/master/sling-jms-discovery/src/main/java/com/cognifide/jms/discovery/election/Election.java)
   * [demo servlet](https://github.com/Cognifide/PoC-Sling-JMS/blob/master/sling-jms-sandbox/src/main/java/com/cognifide/jms/sandbox/InfoServlet.java)
 * Sling Message Consumer
