@@ -16,6 +16,7 @@
   * [demo servlet](https://github.com/Cognifide/PoC-Sling-JMS/blob/master/sling-jms-sandbox/src/main/java/com/cognifide/jms/sandbox/InfoServlet.java)
 * Sling Message Consumer
   * [sample usage](https://github.com/Cognifide/PoC-Sling-JMS/blob/master/sling-jms-session/src/main/java/com/cognifide/jms/session/SharedSessionStorage.java#L30)
+  * [message listener registry component](https://github.com/Cognifide/PoC-Sling-JMS/blob/master/sling-jms-impl-activemq/src/main/java/com/cognifide/jms/impl/activemq/consumer/MessageListenerRegistry.java)
 * Reverse Replication Request
   * [OSGi services](https://github.com/Cognifide/PoC-Sling-JMS/tree/master/cq-jms-replication/src/main/java/com/cognifide/jms/replication)
 * Targeting messages with Sling run mode
