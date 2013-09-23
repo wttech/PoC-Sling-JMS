@@ -2,6 +2,8 @@
 
 Sling JMS is a set of bundles integrating JMS message queue with Sling web framework. It consists of `sling-jms-api` bundle, default implementation based on `ActiveMQ` and sample applications.
 
+Besides this README, you might be interested in the [presentation on SlideShare](http://www.slideshare.net/TomaszRkawek/activemq-adaptto).
+
 **Disclaimer**
 
 Please notice that code shared here is only PoC created for [adaptTo() 2013](http://www.adaptto.org/) conference and shouldn't be treated as production-ready software.
