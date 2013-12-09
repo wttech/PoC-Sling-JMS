@@ -37,6 +37,7 @@ public class SharedSessionServlet extends SlingSafeMethodsServlet {
 				session.setAttribute(new Date().toString() + " " + RANDOM.nextInt(100), new Value());
 			}
 			PrintWriter writer = response.getWriter();
+			writer.append("Session id: ").append(request.getSession().getId()).append('\n');
 			writer.append("Instance id: ").append(settingsService.getSlingId()).append('\n');
 			writer.append("Run modes: ").append(settingsService.getRunModes().toString()).append('\n');
 			writer.append("Path: ").append(settingsService.getSlingHomePath()).append("\n\n---\n");
